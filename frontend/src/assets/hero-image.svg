@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="500" height="400" viewBox="0 0 500 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="400" rx="20" fill="#F0F4FF" />
+  <circle cx="250" cy="180" r="120" fill="#1E3A8A" opacity="0.1" />
+  <circle cx="250" cy="180" r="80" fill="#1E3A8A" opacity="0.2" />
+  <path d="M180,180 L320,180" stroke="#1E3A8A" stroke-width="6" />
+  <path d="M250,110 L250,250" stroke="#1E3A8A" stroke-width="6" />
+  <circle cx="250" cy="180" r="30" fill="#1E3A8A" />
+  <text x="250" y="320" font-family="Arial" font-size="24" fill="#1E3A8A" text-anchor="middle">Oracle Alpha Platform</text>
+  <text x="250" y="350" font-family="Arial" font-size="16" fill="#6B7280" text-anchor="middle">AI-Powered Trading Insights</text>
+</svg> 

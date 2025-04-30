@@ -1,0 +1,21 @@
+{
+  "name": "oracle-alpha",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Oracle Alpha - AI交易神谕终端",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "latest",
+    "vite": "latest"
+  }
+}

@@ -1,7 +1,7 @@
-# EAT Whitepaper (V1.1) — Oracle Alpha Token
+# EAT Whitepaper (V1.2) — Oracle Alpha Token
 
 ## 📅 Version
-- V1.1
+- V1.2
 - Last Updated: 2025-04-30
 
 ---
@@ -66,6 +66,15 @@ Users buy EAT to "bet on" Oracle Alpha's alpha-generating capability, knowing it
 - Oracle Alpha commits to using **self-managed strategy profits** for buyback
 - If EAT market price < NAV, Oracle Alpha **initiates buybacks** using treasury
 - This creates a price floor around NAV via natural arbitrage + team support
+- Buyback may be routed through public DEX pools or internal LP vaults
+- The platform may also choose to burn repurchased tokens or retain them as DAO reserves
+- **回购资金来源明细**：
+  - 铸造费：50%直接进入回购储备
+  - 策略收益：20%分配给回购基金
+  - 平台收入：15%分配给回购基金
+- **回购执行流程**：价格低于阈值时自动触发，大额回购需团队多签批准
+- **回购可视化**：所有回购交易公开透明展示在平台仪表盘
+- **回购上限**：单日回购量不超过流通量的2%，避免市场操纵
 
 ---
 
@@ -99,13 +108,7 @@ EAT price is designed to track NAV, but may temporarily deviate due to market fo
 - Buyback threshold: If EAT < NAV * 0.98
 - Buyback funds allocated from platform profits (non-user funds)
 - Optionally: Buyback tokens can be **burned** (supply deflation) or held (DAO reserves)
-- **回购资金来源明细**：
-  - 铸造费：50%直接进入回购储备
-  - 策略收益：20%分配给回购基金
-  - 平台收入：15%分配给回购基金
-- **回购执行流程**：价格低于阈值时自动触发，大额回购需团队多签批准
-- **回购可视化**：所有回购交易公开透明展示在平台仪表盘
-- **回购上限**：单日回购量不超过流通量的2%，避免市场操纵
+- DAO may govern long-term treasury allocation and supply curve adjustment
 
 ---
 
@@ -114,6 +117,8 @@ EAT price is designed to track NAV, but may temporarily deviate due to market fo
 > "EAT is not a fund share, but a blockchain mirror of our strategy performance."
 >
 > "Every EAT is backed by our daily results. If we perform, EAT appreciates. If price drops below our performance (NAV), we buy it back."
+>
+> "You don't need to trust us, just track the NAV."
 
 ---
 
