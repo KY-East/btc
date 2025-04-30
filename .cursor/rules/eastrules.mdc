@@ -1,0 +1,426 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Crypto Trading System Development Guidelines
+
+"In trading, as in code, patterns reveal the future; precision executes the vision; and both require discipline beyond emotion."
+
+Technical Specifications
+
+Main Framework: React.js with Node.js backend
+State Management: Redux for global state, React hooks for local state
+API Integration: RESTful architecture for exchange connections with WebSocket for real-time data
+Visualization System: ECharts/TradingView for charts, D3.js for custom visualizations
+AI Integration: Claude API for analysis, custom ML models for pattern recognition
+Data Management: Time-series database for historical data, Redis for caching
+Code Requirements:
+
+TypeScript required for all new components and services
+All data processing functions must include robust error handling
+Performance-critical code must include benchmark tests
+All trade-related functionality must use custom types rather than primitives
+
+
+Compatibility:
+
+Support for the latest two versions of Chrome, Firefox, Safari, and Edge
+Mobile responsiveness required for all user-facing components
+PWA support for offline capabilities where applicable
+
+
+
+Architecture Guidelines
+Frontend Architecture
+
+Component Hierarchy:
+
+Atomic design pattern: atoms → molecules → organisms → templates → pages
+Each component must have a single responsibility
+Higher-order components must be used for cross-cutting concerns
+Context providers should manage global state
+
+
+State Management:
+
+Trading signals, positions, and account data in global state
+UI state maintained locally in components
+Separating trade execution state from analytical state
+Persistence layer for user preferences and settings
+
+
+Styling System:
+
+Tailwind CSS for component styling
+Dark mode as default with light mode option
+Design token system with semantic naming
+Responsive design with mobile-first approach
+
+
+
+Backend Architecture
+
+Service Layer:
+
+Microservices architecture with API gateway
+Each service must have clear boundaries
+Access control at service level
+Circuit breakers for all external dependencies
+
+
+Data Processing:
+
+Stream processing for real-time market data
+Batch processing for historical analysis
+Immutable data structures for trade records
+Optimistic locking for concurrent operations
+
+
+Caching Strategy:
+
+Multi-level caching (memory, Redis, CDN)
+Cache invalidation based on TTL or event triggers
+Separate caching policies for different data types
+Cache warming for critical market data
+
+
+
+Trading System Specific Requirements
+Market Data Management
+
+Data Acquisition:
+
+Connection to multiple exchanges via standard interfaces
+Normalization of data across different sources
+Handling of reconnection and data gaps
+Rate-limiting respect per exchange rules
+
+
+Data Processing:
+
+High-performance calculations for indicators
+Parallelized processing where possible
+Memory management for large datasets
+Precision handling for financial calculations
+
+
+Data Visualization:
+
+Consistent chart types across the platform
+Interactive elements with tooltips
+Visual indicators for signals and patterns
+Performance monitoring for rendering speed
+
+
+
+Trading Strategy Implementation
+
+Strategy Framework:
+
+Modular design for strategy components
+Separation of signal generation from execution
+Backtest environment matching production
+Version control for strategy parameters
+
+
+Price Action Analysis:
+
+Pattern recognition components for chart formations
+Support/resistance detection algorithms
+Trend identification across timeframes
+Volatility calculation and normalization
+
+
+Order Book Analysis:
+
+Real-time depth visualization
+Liquidity cluster identification
+Large order detection algorithms
+Market impact estimation tools
+
+
+MA-Based Strategies:
+
+EMA crossover detection system
+Configurable parameters for multiple timeframes
+Signal strength qualification metrics
+False signal filtering mechanisms
+
+
+
+Risk Management System
+
+Position Sizing:
+
+Risk-based position sizing algorithms
+Account balance percentage limitations
+Volatility-adjusted sizing options
+Gradual position building functions
+
+
+Stop Loss Management:
+
+Technical and volatility-based stop placements
+Trailing stop implementations
+Time-based stop adjustments
+Catastrophic risk prevention measures
+
+
+Execution Engine:
+
+Separation between signal generation and execution
+Manual confirmation for large positions
+Automatic execution for small positions
+Execution logs and audit trails
+
+
+
+News and Sentiment Analysis
+
+Data Collection:
+
+Multi-source crawling infrastructure
+Focus on key figures (Trump, Musk, etc.)
+Official sources monitoring (Fed, government)
+Political sentiment categorization (left/right wing)
+
+
+NLP Processing:
+
+Entity recognition for crypto-relevant entities
+Sentiment analysis calibrated for financial context
+Impact classification (high/medium/low)
+Temporal relevance assessment
+
+
+Integration with Trading:
+
+Risk adjustment based on news impact
+Trading pause mechanisms for major events
+Sentiment overlay on technical indicators
+Notification system for actionable news
+
+
+
+Visual Design Standards
+
+Trading Interface:
+
+Clean, distraction-free UI for critical trading functions
+Consistent color coding for profit/loss
+Information density appropriate for experienced traders
+Critical alerts visually distinct from informational notices
+
+
+Color System:
+
+Primary palette: Dark backgrounds (#121826) with high contrast elements
+Profit/Loss: Green (#00C853)/Red (#FF3B30) with neutral Blue (#0A84FF)
+Accent colors: Limited to prevent visual overload
+Alert system: Yellow (#FFCC00) for warnings, Red (#FF3B30) for critical
+
+
+Typography:
+
+Primary: Inter or Roboto for readability
+Monospace: Roboto Mono for data and code
+Size hierarchy: 14px base with 16px/20px for headers
+Line height: 1.5 for optimal readability
+
+
+Chart Styling:
+
+Consistent color scheme across all charts
+Grid lines subtle but visible
+Price action emphasized over indicators
+Patterns and signals clearly highlighted
+
+
+
+Performance Requirements
+
+Trading Critical Operations:
+
+Chart rendering < 200ms
+Order submission < 100ms
+Strategy calculation < 50ms per iteration
+Position updates < 50ms
+
+
+Data Processing:
+
+Support for at least 100 simultaneous connections
+Handle 1000+ market updates per second
+Process 5+ years of historical data for backtesting
+Support pattern scanning across 50+ assets simultaneously
+
+
+Optimization Techniques:
+
+Web Workers for heavy calculations
+WebAssembly for performance-critical algorithms
+Virtual scrolling for large datasets
+Memoization for expensive computations
+
+
+
+Security Guidelines
+
+API Key Management:
+
+No client-side storage of API secrets
+Encrypted storage in secure backend
+Key rotation policies
+Minimum-privilege principle for API access
+
+
+Trading Security:
+
+Confirmation for trades above configurable threshold
+IP restriction for trading operations
+Unusual activity detection and alerts
+Transaction signing for critical operations
+
+
+Data Security:
+
+End-to-end encryption for sensitive data
+Anonymized analytics data
+Data retention policies
+Secure deletion procedures
+
+
+
+Testing Requirements
+
+Strategy Testing:
+
+Backtesting against historical data
+Forward testing in sandbox environment
+Monte Carlo simulations for robustness
+Stress testing against extreme market conditions
+
+
+System Testing:
+
+Load testing for concurrent users
+Performance testing for data processing
+Failover testing for critical services
+Recovery testing for system failures
+
+
+Automation:
+
+Automated integration tests for all API endpoints
+Unit tests for all business logic
+UI component tests with snapshots
+End-to-end tests for critical user journeys
+
+
+
+Documentation Standards
+
+Code Documentation:
+
+JSDoc for all public functions and components
+Algorithm explanations for complex trading logic
+Performance considerations documented
+Known limitations clearly stated
+
+
+User Documentation:
+
+Strategy guides with visual examples
+Risk management explanations
+System capability documentation
+Troubleshooting guides for common issues
+
+
+Architecture Documentation:
+
+System diagrams with component relationships
+Data flow documentation
+API specifications with examples
+Dependency documentation and versioning
+
+
+
+Deployment and DevOps
+
+Environment Strategy:
+
+Development, Staging, and Production environments
+Feature flags for gradual rollout
+Blue/Green deployment for zero downtime
+Canary releases for risk mitigation
+
+
+Monitoring:
+
+Real-time performance monitoring
+Error tracking and alerting
+User experience monitoring
+Trading system health checks
+
+
+Backup and Recovery:
+
+Automated backups of all trading data
+Point-in-time recovery capabilities
+Disaster recovery procedures
+Regular recovery testing
+
+
+
+Prohibited Practices
+
+Trading Engine:
+
+No undocumented magic numbers in trading algorithms
+No direct manipulation of trading data outside API
+No mixing of demo and real trading environments
+No bypassing of risk management systems
+
+
+User Interface:
+
+No UI changes that affect trading workflow without review
+No removal of confirmation steps for critical actions
+No ambiguous terminology in trading contexts
+No non-standard chart patterns without documentation
+
+
+Data Handling:
+
+No client-side storage of sensitive trading data
+No unnecessary retention of historical user data
+No sharing of individual trading patterns
+No combining of different users' trading data
+
+
+
+Development Process
+
+Agile Methodology:
+
+Two-week sprints with planning and retrospective
+Daily stand-ups focused on blockers
+User story-driven development
+Continuous integration and delivery
+
+
+Code Review Process:
+
+All code requires review before merging
+Trading logic requires domain expert review
+Performance-critical code requires benchmark tests
+Security-sensitive code requires security review
+
+
+Release Management:
+
+Semantic versioning for all releases
+Detailed changelog for all changes
+Feature announcements for user-facing changes
+Deprecation notices for removed functionality
