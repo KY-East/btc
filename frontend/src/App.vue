@@ -23,7 +23,7 @@ import ParticleBg from './components/ParticleBg.vue';
 import HomeHero from './components/HomeHero.vue';
 import TradingDashboard from './components/TradingDashboard.vue';
 
-const step = ref(2); // 0:未连接钱包 1:已连接神谕 2:进入EZ Trading
+const step = ref(0); // 0:未连接钱包 1:已连接神谕 2:进入EZ Trading
 const soundEnabled = ref(true); // 音效状态
 const homeHeroRef = ref(null); // HomeHero组件引用
 
