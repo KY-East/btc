@@ -8,6 +8,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      'react': path.resolve(__dirname, 'src/react-shim.js'),
+      'react-dom': path.resolve(__dirname, 'src/react-dom-shim.js')
     },
     dedupe: ['vue']
   },
@@ -34,7 +36,7 @@ export default defineConfig({
         if (warning.code === 'EVAL') return
         warn(warning)
       },
-      external: [],
+      external: ['react', 'react-dom'],
       output: {
         manualChunks: {
           vendor: ['vue'],
