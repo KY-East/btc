@@ -3,6 +3,10 @@
   publish = "dist"
   command = "npm run build"
 
+[build.environment]
+  NPM_FLAGS = "--legacy-peer-deps --no-fund"
+  NODE_OPTIONS = "--max_old_space_size=4096"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
