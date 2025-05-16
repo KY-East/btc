@@ -24,9 +24,13 @@ Oracle Alpha是一个面向加密散户用户的轻量级AI交易神谕终端。
 
 ## 文档资源
 
+- [项目主文档](./docs/MASTER_DOCUMENTATION.md) - 整合所有文档的核心内容
 - [EAT代币白皮书](./docs/EAT_WHITEPAPER.md) - Oracle Alpha Token详细设计
 - [前台系统规格](./docs/FRONTEND_SPEC.md) - 面向用户的神谕终端界面设计
 - [系统需求规格](./docs/REQUIREMENTS.md) - 后台系统技术架构(内部)
+- [技术实现方案](./docs/IMPLEMENTATION.md) - 系统组件与流程详细实现
+- [技术开发指南](./docs/DEVELOPMENT_TECHNICAL_GUIDE.md) - 产品各组件详细开发方法
+- [开发协作手册](./docs/DEVELOPMENT_GUIDE.md) - 团队协作流程与规范
 - [开发进度](./docs/PROGRESS.md) - 项目开发进度跟踪
 
 ## 产品结构

@@ -1,28 +1,90 @@
-# EAT Whitepaper (V1.2) — Oracle Alpha Token
+# EAT Whitepaper (V1.4) — EZ Trading Alpha Token
 
 ## 📅 Version
-- V1.2
-- Last Updated: 2025-04-30
+
+* V1.4
+* Last Updated: 2025-05-08
+
+---
+
+## 🧠 EZ Trading 的 EAT 单币模型：一币统管、三重价值支撑
+
+EZ Trading 仅使用一种通证：**EAT**。它给用户操作权限，也是全平台经济的模块基础。
+
+EAT 基于三重价值支撑：
+
+| 价值类型                        | 描述                   | 功能                    |
+| --------------------------- | -------------------- | --------------------- |
+| 🧾 **净值链锚 (NAV Anchoring)** | 每日根据实际策略收益计算 NAV     | 为 EAT 带来最低价值支撑，形成地板效应 |
+| ⚡️ **功能应用绑定**               | 所有解锁、操作、应用均需消耗 EAT   | 形成燃烧场景，增强用户实际需求与消耗相关  |
+| ❌ **供给塑造应力**                | EAT 有最大发行量，并在消耗时部分烧毁 | 保证通缩，深化用户对价值的预期       |
+
+---
+
+## 💰 EAT 使用场景 (Utility)
+
+| 场景         | 消耗量        | 燃烧占比 |
+| ---------- | ---------- | ---- |
+| 解锁当日神谕详情   | 1 EAT      | 50%  |
+| 解锁历史策略详情   | 1 EAT      | 30%  |
+| 解锁长期策略评估报告 | 2 EAT      | 50%  |
+| 自定义推送基准    | 2 EAT      | 40%  |
+| 一键跟单权限开启   | 3 EAT/策略周期 | 50%  |
+| 参与治理投票     | 需质押        | —    |
+| 分成收益权限     | 需质押        | —    |
+
+**说明：** 未进行相应功能解锁，均无法体验；无"预看明日"功能，因为策略不是预测预报而是"数据同步后的分析"。
+
+---
+
+## 🎁 EAT 获取途径
+
+| 条件   | 分发逻辑            | 通胀控制         |
+| ---- | --------------- | ------------ |
+| 每日登录 | 领取 1 EAT (手动操作) | 最大日量上限，可随时调整 |
+| 持币奖励 | 持有 > X EAT 日补充  | 来自策略分成资源     |
+| 市场购买 | DEX/平台实时购买      | 真实价格发现       |
+
+---
+
+## 🔄 治理 & 回购机制
+
+* 平台使用部分收益进行 EAT 回购
+* 价格 < NAV 时触发回购策略，综合生态基金池/应用比例判定
+* 回购 EAT 可选择烧毁/持有/重分配
+
+---
+
+## 🚀 未来路线：
+
+1. 基础功能部署（每日领EAT + 解锁当日神谕）
+2. 功能型维度分级（添加历史解析、长期报告、一键跟单）
+3. 同步 NAV + 分成收益模型调度
+4. 增强 DAO 治理权限 + 通缩补偿经济模型
+
+---
+
+**这是 EZ Trading 的 EAT 单币模型 V1.4，合并了所有功能解锁、数据指示、分成返馈、通缩调节系统逻辑。**
 
 ---
 
 ## ☑️ 1. Project Overview
 
-**Oracle Alpha** is a lightweight AI-driven trading oracle platform. Each day, users can log in and receive a free trading suggestion ("oracle") for one trending altcoin, powered by a multi-agent analysis system and Claude-style AI commentary.
+**EZ Trading** is a lightweight AI-driven trading oracle platform. Each day, users can log in and receive a free trading suggestion ("oracle") for one trending altcoin, powered by a multi-agent analysis system and Claude-style AI commentary. Oracle Alpha是交易神谕组件的名称。
 
-**EAT (Oracle Alpha Token)** is the on-chain representation of Oracle Alpha's daily strategy performance. It enables users to financially engage with the platform's strategy performance without handing over their own assets.
+**EAT (EZ Trading Alpha Token)** is the on-chain representation of EZ Trading's daily strategy performance. It enables users to financially engage with the platform's strategy performance without handing over their own assets.
 
 ---
 
 ## 🌍 2. EAT Definition & Purpose
 
-**EAT is a token that tracks the net asset value (NAV) of Oracle Alpha's official self-managed strategy account.**
+**EAT is a token that tracks the net asset value (NAV) of EZ Trading's official self-managed strategy account.**
 
 - ✅ It does **not** require API access to users' funds
 - ✅ It does **not** perform delegated execution
 - ✅ It does **not** guarantee profit
 
-Users buy EAT to "bet on" Oracle Alpha's alpha-generating capability, knowing its price is backed by the platform's real-time NAV and supported by the team's buyback commitment.
+Users buy EAT to "bet on" EZ Trading's alpha-generating capability, knowing its price is backed by the platform's real-time NAV and supported by the team's buyback commitment.
 
 ---
 
@@ -63,8 +125,8 @@ Users buy EAT to "bet on" Oracle Alpha's alpha-generating capability, knowing it
 - **排队机制**：高需求期间，铸造请求按提交顺序处理
 
 ### 3.5 Buyback Guarantee (Floor Price Protection)
-- Oracle Alpha commits to using **self-managed strategy profits** for buyback
-- If EAT market price < NAV, Oracle Alpha **initiates buybacks** using treasury
+- EZ Trading commits to using **self-managed strategy profits** for buyback
+- If EAT market price < NAV, EZ Trading **initiates buybacks** using treasury
 - This creates a price floor around NAV via natural arbitrage + team support
 - Buyback may be routed through public DEX pools or internal LP vaults
 - The platform may also choose to burn repurchased tokens or retain them as DAO reserves
@@ -82,7 +144,7 @@ Users buy EAT to "bet on" Oracle Alpha's alpha-generating capability, knowing it
 
 | Component       | Value Contribution                                      |
 |----------------|----------------------------------------------------------|
-| Strategy Alpha  | Real NAV performance from Oracle Alpha's daily strategies  |
+| Strategy Alpha  | Real NAV performance from EZ Trading's daily strategies  |
 | Minting Floor   | Price cannot fall far below NAV due to floor buys       |
 | Team Skin-in-game | Team holds long-term vested EAT, incentivized to grow NAV |
 | Limited Minting | New supply only at updated NAV price                    |
@@ -96,7 +158,7 @@ Users buy EAT to "bet on" Oracle Alpha's alpha-generating capability, knowing it
 EAT price is designed to track NAV, but may temporarily deviate due to market forces:
 
 - ⬆ Bull case: Market price > NAV → Users sell, or wait for new NAV mint
-- ⬇ Bear case: Market price < NAV → Arbitrageurs + Oracle Alpha buyback kicks in
+- ⬇ Bear case: Market price < NAV → Arbitrageurs + EZ Trading buyback kicks in
 
 > Over time, the price will tend to revert to NAV due to economic pressure and buyback policy
 
@@ -104,7 +166,7 @@ EAT price is designed to track NAV, but may temporarily deviate due to market fo
 
 ## 🪜 6. Buyback & Treasury Policy
 
-- Oracle Alpha uses a portion of strategy account profits for **daily/weekly buybacks**
+- EZ Trading uses a portion of strategy account profits for **daily/weekly buybacks**
 - Buyback threshold: If EAT < NAV * 0.98
 - Buyback funds allocated from platform profits (non-user funds)
 - Optionally: Buyback tokens can be **burned** (supply deflation) or held (DAO reserves)

@@ -1,8 +1,8 @@
 {
-  "name": "oracle-alpha",
-  "version": "1.0.0",
+  "name": "ez-trading",
   "private": true,
-  "description": "Oracle Alpha - AI交易神谕终端",
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -12,11 +12,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "vue": "latest"
+    "@solana/wallet-adapter-base": "^0.9.26",
+    "@solana/wallet-adapter-phantom": "^0.9.27",
+    "@solana/wallet-adapter-vue": "^0.4.5",
+    "@solana/wallet-adapter-wallets": "^0.19.36",
+    "tsparticles-engine": "^2.12.0",
+    "vue": "^3.3.4",
+    "vue3-particles": "^2.12.0",
+    "gsap": "^3.12.2",
+    "howler": "^2.2.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "latest",
+    "@vitejs/plugin-vue": "^4.2.3",
     "terser": "^5.39.0",
-    "vite": "latest"
+    "vite": "^4.4.5"
   }
 }
