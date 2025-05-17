@@ -1901,14 +1901,49 @@ function submitOrder() {
     flex: 1;
     justify-content: space-between;
   }
+  
+  .oracle-display {
+    grid-template-columns: 1fr;
+    padding: 0 15px;
+  }
+  
+  .dashboard-header {
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .main-content {
+    padding: 15px 0;
+  }
 }
 
 /* 量子神谕展示区 */
 .oracle-display {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 25px;
   margin-bottom: 30px;
+}
+
+/* 添加移动端适配的媒体查询 */
+@media (max-width: 768px) {
+  .oracle-display {
+    grid-template-columns: 1fr;
+    padding: 0 15px;
+  }
+  
+  .dashboard-header {
+    padding: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .dashboard-content {
+    margin-top: 10px;
+  }
+  
+  .main-content {
+    padding: 15px 0;
+  }
 }
 
 .quantum-oracle-card {
