@@ -1,149 +1,143 @@
 <template>
-  <div class="daily-worship-container">
-    <div class="shrine-card">
-      <div class="card-header">
-        <div class="header-title">能量朝拜仪式</div>
-        <div class="ritual-status" :class="{ 'active': !hasWorshipped }">{{ hasWorshipped ? '今日已完成' : '可领取' }}</div>
+  <div class="alpha-activation" :class="{ 'fullscreen': true }">
+    <!-- 背景系统 -->
+    <div class="cosmic-background">
+      <div class="star-field">
+        <div v-for="i in 100" :key="i" class="star" :style="getStarStyle(i)"></div>
       </div>
-      
-      <div class="shrine-content">
-        <div class="shrine-visual">
-          <div class="shrine-core" :class="{ 'active': !hasWorshipped }" @click="performWorship">
-            <div class="core-symbol">⚛</div>
-            <div class="core-rings" v-if="!hasWorshipped">
-              <div class="ring ring1"></div>
-              <div class="ring ring2"></div>
-              <div class="ring ring3"></div>
-            </div>
-            <div class="core-particles"></div>
-          </div>
-          
-          <div class="worship-prompt" v-if="!hasWorshipped">
-            <div class="prompt-text">点击核心进行能量朝拜</div>
-            <div class="prompt-arrow">⬆</div>
-          </div>
-          
-          <div class="worship-complete" v-else>
-            <div class="complete-text">今日能量已获取</div>
-            <div class="next-available">
-              下次朝拜: <span class="time-value">{{ nextWorshipTime }}</span>
-            </div>
-          </div>
+    </div>
+
+    <!-- 主要激活界面 -->
+    <div class="alpha-activation-main">
+      <!-- 顶部控制栏 -->
+      <div class="activation-header">
+        <div class="header-left">
+          <h1 class="alpha-title">Alpha神谕激活</h1>
+          <p class="alpha-subtitle">连接Alpha量子场，获取EAT能量</p>
         </div>
         
-        <div class="reward-display">
-          <div class="reward-title">每日能量奖励</div>
-          <div class="reward-value">
-            <span class="value">1.0</span>
-            <span class="token">EAT</span>
+        <div class="header-right">
+          <div class="energy-display">
+            <span class="energy-icon">⚡</span>
+            <span class="energy-amount">{{ userEnergy }}</span>
+            <span class="energy-unit">EAT</span>
           </div>
-          <div class="reward-note">连续朝拜 {{ consecutiveDays }} 天</div>
-          
-          <div class="streak-bonus" v-if="consecutiveDays >= 7">
-            <div class="bonus-label">7日连续朝拜奖励</div>
-            <div class="bonus-value">+0.5 EAT</div>
-          </div>
+          <button class="skip-button" @click="$emit('skip-activation')">
+            跳过激活
+          </button>
         </div>
       </div>
-      
-      <div class="ritual-stats">
-        <div class="stat-item">
-          <div class="stat-value">{{ totalEarned }}</div>
-          <div class="stat-label">总计获得EAT</div>
+
+      <!-- Alpha激活核心 -->
+      <div class="alpha-core-container">
+        <div class="alpha-core" :class="{ 'activated': isActivated, 'activating': isActivating }">
+          <!-- 背景粒子系统 -->
+          <div class="alpha-particles">
+            <div v-for="i in 50" :key="i" class="alpha-particle" :style="getParticleStyle(i)"></div>
+          </div>
+          
+          <!-- 中央Alpha核心 -->
+          <div class="core-center">
+            <!-- 主球体 -->
+            <div class="alpha-sphere">
+              <div class="sphere-inner"></div>
+              <div class="sphere-glow"></div>
+            </div>
+            
+            <!-- Alpha符号 -->
+            <div class="alpha-symbol">
+              <svg viewBox="0 0 100 100" class="alpha-svg">
+                <path d="M20 80 L50 20 L80 80 M30 65 L70 65" 
+                      stroke="currentColor" 
+                      stroke-width="3" 
+                      fill="none" 
+                      stroke-linecap="round"/>
+              </svg>
+            </div>
+            
+            <!-- 轨道环 -->
+            <div class="orbit-ring orbit-1"></div>
+            <div class="orbit-ring orbit-2"></div>
+            <div class="orbit-ring orbit-3"></div>
+          </div>
+          
+          <!-- 脉冲效果 -->
+          <div class="pulse-effect"></div>
         </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ consecutiveDays }}</div>
-          <div class="stat-label">连续朝拜天数</div>
+      </div>
+
+      <!-- 激活控制面板 -->
+      <div class="activation-controls">
+        <div class="activation-info">
+          <div class="info-item">
+            <span class="info-label">今日奖励</span>
+            <span class="info-value">+{{ dailyReward }} EAT</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">连续天数</span>
+            <span class="info-value">{{ consecutiveDays }}天</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">激活状态</span>
+            <span class="info-value" :class="statusClass">{{ statusText }}</span>
+          </div>
         </div>
-        <div class="stat-item">
-          <div class="stat-value">{{ maxStreakDays }}</div>
-          <div class="stat-label">最长连续天数</div>
+
+        <!-- 激活按钮 -->
+        <div class="activation-button-container">
+          <button 
+            class="activation-button" 
+            :class="{ 'activated': isActivated, 'activating': isActivating }"
+            :disabled="isActivated || isActivating"
+            @click="startActivation"
+          >
+            <div class="button-content">
+              <div class="button-icon">
+                <span v-if="!isActivating && !isActivated">⚡</span>
+                <div v-else-if="isActivating" class="loading-spinner"></div>
+                <span v-else>✓</span>
+              </div>
+              <div class="button-text">
+                <span v-if="!isActivating && !isActivated">激活Alpha神谕</span>
+                <span v-else-if="isActivating">激活中...</span>
+                <span v-else>今日已激活</span>
+              </div>
+            </div>
+            <div class="button-energy"></div>
+          </button>
+        </div>
+
+        <!-- 激活进度 -->
+        <div v-if="isActivating" class="activation-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: activationProgress + '%' }"></div>
+          </div>
+          <div class="progress-text">{{ Math.round(activationProgress) }}%</div>
         </div>
       </div>
     </div>
-    
-    <div class="calendar-card">
-      <div class="card-header">
-        <div class="header-title">朝拜日历</div>
-        <div class="month-nav">
-          <button class="month-btn" @click="previousMonth">◀</button>
-          <div class="current-month">{{ currentMonthDisplay }}</div>
-          <button class="month-btn" @click="nextMonth">▶</button>
-        </div>
-      </div>
-      
-      <div class="calendar-grid">
-        <div class="weekday-header" v-for="day in ['日', '一', '二', '三', '四', '五', '六']" :key="day">
-          {{ day }}
+
+    <!-- 激活成功动画 -->
+    <div v-if="showSuccessAnimation" class="success-animation">
+      <div class="success-content">
+        <div class="success-icon">⚡</div>
+        <h2 class="success-title">激活成功！</h2>
+        <p class="success-message">获得 {{ dailyReward }} EAT 能量</p>
+        
+        <!-- 添加进入交易终端按钮 -->
+        <div class="success-actions">
+          <button class="enter-trading-btn" @click="enterTrading">
+            <span class="btn-icon">🚀</span>
+            <span class="btn-text">进入交易终端</span>
+            <div class="btn-glow"></div>
+          </button>
+          <button class="continue-btn" @click="closeSuccess">
+            <span class="btn-text">查看详情</span>
+          </button>
         </div>
         
-        <div 
-          v-for="(day, index) in calendarDays" 
-          :key="index"
-          class="calendar-day"
-          :class="{
-            'empty': !day.date,
-            'completed': day.worshipped,
-            'today': day.isToday,
-            'future': day.isFuture
-          }"
-        >
-          <template v-if="day.date">
-            <div class="day-number">{{ day.date.getDate() }}</div>
-            <div class="day-indicator" v-if="day.worshipped">✓</div>
-          </template>
-        </div>
-      </div>
-      
-      <div class="calendar-footer">
-        <div class="legend-item">
-          <div class="legend-color completed"></div>
-          <div class="legend-text">已朝拜</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color today"></div>
-          <div class="legend-text">今日</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color missed"></div>
-          <div class="legend-text">未朝拜</div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="bonus-tiers-card">
-      <div class="card-header">
-        <div class="header-title">连续朝拜奖励</div>
-      </div>
-      
-      <div class="tiers-display">
-        <div 
-          v-for="(tier, index) in bonusTiers" 
-          :key="index"
-          class="tier-item"
-          :class="{ 'achieved': consecutiveDays >= tier.days }"
-        >
-          <div class="tier-days">{{ tier.days }}天</div>
-          <div class="tier-connector" v-if="index < bonusTiers.length - 1"></div>
-          <div class="tier-bonus">+{{ tier.bonus }} EAT</div>
-          <div class="tier-icon" :class="{ 'unlocked': consecutiveDays >= tier.days }">
-            <span v-if="consecutiveDays >= tier.days">✓</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="bonus-note">
-        连续朝拜可获得额外奖励，中断后重新计算
-      </div>
-    </div>
-    
-    <!-- 朝拜动画弹窗 -->
-    <div class="worship-modal" v-if="showWorshipAnimation">
-      <div class="modal-content">
-        <div class="animation-container">
-          <div class="energy-burst"></div>
-          <div class="reward-symbol">+1 EAT</div>
-          <div class="streak-bonus" v-if="earnedStreakBonus">+0.5 EAT 连续奖励</div>
+        <div class="success-effects">
+          <div v-for="i in 20" :key="i" class="success-particle" :style="getSuccessParticleStyle(i)"></div>
         </div>
       </div>
     </div>
@@ -153,698 +147,799 @@
 <script>
 export default {
   name: 'DailyWorship',
+  
+  emits: ['activation-complete', 'skip-activation', 'enter-trading'],
+  
   data() {
     return {
-      hasWorshipped: false,
-      consecutiveDays: 12,
-      maxStreakDays: 21,
-      totalEarned: 45.5,
-      showWorshipAnimation: false,
-      earnedStreakBonus: false,
-      currentMonth: new Date(),
-      
-      // 模拟数据 - 本月已朝拜的日期
-      worshippedDates: [
-        new Date(2024, 5, 1),
-        new Date(2024, 5, 2),
-        new Date(2024, 5, 3),
-        new Date(2024, 5, 4),
-        new Date(2024, 5, 5),
-        new Date(2024, 5, 6),
-        new Date(2024, 5, 7),
-        new Date(2024, 5, 8),
-        new Date(2024, 5, 9),
-        new Date(2024, 5, 10),
-        new Date(2024, 5, 11),
-        new Date(2024, 5, 12),
-        new Date(2024, 5, 13),
-        new Date(2024, 5, 14),
-      ],
-      
-      bonusTiers: [
-        { days: 3, bonus: 0.2 },
-        { days: 7, bonus: 0.5 },
-        { days: 14, bonus: 1.0 },
-        { days: 30, bonus: 2.0 },
-        { days: 60, bonus: 5.0 },
-      ]
+      userEnergy: 125.5,
+      dailyReward: 5,
+      consecutiveDays: 7,
+      isActivated: false,
+      isActivating: false,
+      activationProgress: 0,
+      showSuccessAnimation: false
     }
   },
   
   computed: {
-    nextWorshipTime() {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
-      
-      const now = new Date();
-      const timeRemaining = tomorrow - now;
-      
-      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
-      
-      return `${hours}小时${minutes}分钟后`;
+    statusText() {
+      if (this.isActivated) return '已激活'
+      if (this.isActivating) return '激活中'
+      return '待激活'
     },
     
-    currentMonthDisplay() {
-      const year = this.currentMonth.getFullYear();
-      const month = this.currentMonth.getMonth() + 1;
-      return `${year}年${month}月`;
-    },
-    
-    calendarDays() {
-      const year = this.currentMonth.getFullYear();
-      const month = this.currentMonth.getMonth();
-      
-      // 本月第一天
-      const firstDay = new Date(year, month, 1);
-      // 本月最后一天
-      const lastDay = new Date(year, month + 1, 0);
-      
-      // 本月第一天是星期几（0是周日，6是周六）
-      const firstDayOfWeek = firstDay.getDay();
-      
-      // 本月天数
-      const daysInMonth = lastDay.getDate();
-      
-      // 日历日期数组
-      const days = [];
-      
-      // 添加上个月的占位天数
-      for (let i = 0; i < firstDayOfWeek; i++) {
-        days.push({ date: null });
-      }
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      // 添加本月所有天数
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(year, month, day);
-        
-        // 检查是否已朝拜
-        const worshipped = this.worshippedDates.some(worshippedDate => 
-          worshippedDate.getFullYear() === date.getFullYear() &&
-          worshippedDate.getMonth() === date.getMonth() &&
-          worshippedDate.getDate() === date.getDate()
-        );
-        
-        // 检查是否是今天
-        const isToday = date.getFullYear() === today.getFullYear() &&
-                        date.getMonth() === today.getMonth() &&
-                        date.getDate() === today.getDate();
-        
-        // 检查是否是未来日期
-        const isFuture = date > today;
-        
-        days.push({ 
-          date, 
-          worshipped, 
-          isToday,
-          isFuture
-        });
-      }
-      
-      return days;
+    statusClass() {
+      if (this.isActivated) return 'activated'
+      if (this.isActivating) return 'activating'
+      return 'pending'
     }
   },
   
   methods: {
-    performWorship() {
-      if (this.hasWorshipped) return;
+    getStarStyle(index) {
+      const x = Math.random() * 100
+      const y = Math.random() * 100
+      const delay = Math.random() * 3
+      const duration = 2 + Math.random() * 4
       
-      this.showWorshipAnimation = true;
+      return {
+        left: `${x}%`,
+        top: `${y}%`,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`
+      }
+    },
+    
+    getParticleStyle(index) {
+      const angle = (index * 360 / 50) * Math.PI / 180
+      const radius = 150 + Math.random() * 100
+      const x = Math.cos(angle) * radius
+      const y = Math.sin(angle) * radius
+      const delay = Math.random() * 3
+      const duration = 2 + Math.random() * 2
       
-      // 检查是否获得连续奖励
-      this.earnedStreakBonus = this.consecutiveDays % 7 === 0;
+      return {
+        left: `calc(50% + ${x}px)`,
+        top: `calc(50% + ${y}px)`,
+        animationDelay: `${delay}s`,
+        animationDuration: `${duration}s`
+      }
+    },
+    
+    getSuccessParticleStyle(index) {
+      const angle = (index * 360 / 20) * Math.PI / 180
+      const radius = Math.random() * 200
+      const x = Math.cos(angle) * radius
+      const y = Math.sin(angle) * radius
       
+      return {
+        left: `calc(50% + ${x}px)`,
+        top: `calc(50% + ${y}px)`,
+        animationDelay: `${Math.random() * 0.5}s`
+      }
+    },
+    
+    startActivation() {
+      if (this.isActivated || this.isActivating) return
+      
+      this.isActivating = true
+      this.activationProgress = 0
+      
+      // 模拟激活进度
+      const progressInterval = setInterval(() => {
+        this.activationProgress += Math.random() * 10
+        
+        if (this.activationProgress >= 100) {
+          clearInterval(progressInterval)
+          this.activationProgress = 100
+          this.completeActivation()
+        }
+      }, 150)
+    },
+    
+    completeActivation() {
       setTimeout(() => {
-        this.hasWorshipped = true;
-        this.showWorshipAnimation = false;
+        this.isActivating = false
+        this.isActivated = true
+        this.showSuccessAnimation = true
         
-        // 更新数据
-        this.totalEarned += this.earnedStreakBonus ? 1.5 : 1.0;
-        
-        // 更新朝拜记录
-        const today = new Date();
-        this.worshippedDates.push(today);
-      }, 3000);
+        // 发送激活完成事件
+        this.$emit('activation-complete', {
+          reward: this.dailyReward,
+          consecutiveDays: this.consecutiveDays
+        })
+      }, 500)
     },
     
-    previousMonth() {
-      const newMonth = new Date(this.currentMonth);
-      newMonth.setMonth(newMonth.getMonth() - 1);
-      this.currentMonth = newMonth;
+    enterTrading() {
+      // 发出进入交易终端事件
+      this.$emit('enter-trading')
+      this.showSuccessAnimation = false
     },
     
-    nextMonth() {
-      const newMonth = new Date(this.currentMonth);
-      newMonth.setMonth(newMonth.getMonth() + 1);
-      this.currentMonth = newMonth;
+    closeSuccess() {
+      // 隐藏成功动画，继续留在激活界面
+      this.showSuccessAnimation = false
     }
   }
 }
 </script>
 
 <style scoped>
-.daily-worship-container {
-  width: 100%;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  color: #e6e6ff;
-}
-
-/* 卡片通用样式 */
-.shrine-card,
-.calendar-card,
-.bonus-tiers-card {
-  background: rgba(22, 28, 47, 0.8);
-  border-radius: 12px;
-  border: 1px solid rgba(64, 110, 215, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 0 20px rgba(56, 114, 255, 0.1);
-  overflow: hidden;
-  padding: 20px;
-  position: relative;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(64, 110, 215, 0.3);
-}
-
-.header-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.ritual-status {
-  font-size: 14px;
-  padding: 4px 10px;
-  background: rgba(100, 100, 140, 0.2);
-  border-radius: 20px;
-  color: rgba(200, 200, 255, 0.7);
-}
-
-.ritual-status.active {
-  background: rgba(56, 168, 255, 0.2);
-  color: #38a8ff;
-  animation: pulse 2s infinite;
-}
-
-/* 神龛内容区 */
-.shrine-content {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.shrine-visual {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  position: relative;
-}
-
-.shrine-core {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #244170 0%, #142548 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.shrine-core.active {
-  box-shadow: 0 0 30px rgba(56, 114, 255, 0.4);
-  animation: pulse 2s infinite;
-}
-
-.shrine-core.active:hover {
-  transform: scale(1.05);
-}
-
-.core-symbol {
-  font-size: 48px;
-  color: #4a88db;
-  z-index: 2;
-}
-
-.core-rings {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  border-radius: 50%;
-  border: 1px solid rgba(56, 114, 255, 0.5);
-  transform: translate(-50%, -50%);
-}
-
-.ring1 {
-  width: 130%;
-  height: 130%;
-  animation: rotate 10s linear infinite;
-}
-
-.ring2 {
-  width: 160%;
-  height: 160%;
-  animation: rotate 15s linear infinite reverse;
-}
-
-.ring3 {
-  width: 190%;
-  height: 190%;
-  animation: rotate 20s linear infinite;
-}
-
-.core-particles {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background-image: radial-gradient(circle, rgba(56, 114, 255, 0.3) 1px, transparent 1px);
-  background-size: 16px 16px;
-  animation: rotate 30s linear infinite;
-  opacity: 0.3;
-}
-
-.worship-prompt {
-  margin-top: 20px;
-  text-align: center;
-  animation: float 2s ease-in-out infinite;
-}
-
-.prompt-text {
-  font-size: 16px;
-  color: #38a8ff;
-  margin-bottom: 5px;
-}
-
-.prompt-arrow {
-  font-size: 20px;
-  color: #38a8ff;
-}
-
-.worship-complete {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.complete-text {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 5px;
-}
-
-.next-available {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.time-value {
-  color: #ffac2f;
-}
-
-.reward-display {
-  width: 160px;
-  background: rgba(16, 20, 40, 0.7);
-  border-radius: 10px;
-  padding: 15px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.reward-title {
-  font-size: 16px;
-  margin-bottom: 15px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.reward-value {
-  margin-bottom: 10px;
-}
-
-.reward-value .value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffac2f;
-}
-
-.reward-value .token {
-  font-size: 18px;
-  color: rgba(255, 172, 47, 0.7);
-  margin-left: 5px;
-}
-
-.reward-note {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.streak-bonus {
-  margin-top: 15px;
-  padding: 8px 12px;
-  background: rgba(255, 172, 47, 0.15);
-  border-radius: 8px;
-  width: 100%;
-}
-
-.bonus-label {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 5px;
-}
-
-.bonus-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #ffac2f;
-}
-
-/* 朝拜统计 */
-.ritual-stats {
-  display: flex;
-  justify-content: space-around;
-  padding: 15px 0;
-  background: rgba(16, 20, 40, 0.5);
-  border-radius: 10px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 24px;
-  font-weight: 600;
-  color: #38a8ff;
-  margin-bottom: 5px;
-}
-
-.stat-label {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 日历卡片样式 */
-.month-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.month-btn {
-  background: rgba(56, 114, 255, 0.1);
-  border: none;
-  color: #38a8ff;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.month-btn:hover {
-  background: rgba(56, 114, 255, 0.2);
-}
-
-.current-month {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.weekday-header {
-  text-align: center;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 5px 0;
-}
-
-.calendar-day {
-  aspect-ratio: 1;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(16, 20, 40, 0.5);
-  position: relative;
-}
-
-.calendar-day.empty {
-  background: transparent;
-}
-
-.calendar-day.completed {
-  background: rgba(56, 114, 255, 0.15);
-}
-
-.calendar-day.today {
-  background: rgba(255, 172, 47, 0.15);
-  border: 1px solid rgba(255, 172, 47, 0.5);
-}
-
-.calendar-day.future {
-  opacity: 0.5;
-}
-
-.day-number {
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.day-indicator {
-  font-size: 14px;
-  color: #38a8ff;
-  margin-top: 2px;
-}
-
-.calendar-footer {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-}
-
-.legend-color.completed {
-  background: rgba(56, 114, 255, 0.15);
-}
-
-.legend-color.today {
-  background: rgba(255, 172, 47, 0.15);
-}
-
-.legend-color.missed {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.legend-text {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 奖励等级卡片样式 */
-.tiers-display {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding: 0 10px;
-}
-
-.tier-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  width: 18%;
-  opacity: 0.7;
-}
-
-.tier-connector {
-  position: absolute;
-  top: 15px;
-  right: -60%;
-  width: 120%;
-  height: 2px;
-  background: rgba(64, 110, 215, 0.3);
-  z-index: 0;
-}
-
-.tier-days {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 5px;
-  z-index: 1;
-}
-
-.tier-bonus {
-  font-size: 14px;
-  color: #ffac2f;
-}
-
-.tier-icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-  font-size: 12px;
-  color: transparent;
-}
-
-.tier-icon.unlocked {
-  background: rgba(56, 168, 255, 0.3);
-  color: #fff;
-}
-
-.tier-item.achieved {
-  opacity: 1;
-}
-
-.bonus-note {
-  text-align: center;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-/* 朝拜动画弹窗 */
-.worship-modal {
+.alpha-activation {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #2a0845 100%);
+  color: #fff;
+  overflow-y: auto;
   z-index: 1000;
 }
 
-.modal-content {
-  width: 300px;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.animation-container {
-  position: relative;
+/* 背景系统 */
+.cosmic-background {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
+}
+
+.star-field {
+  width: 100%;
+  height: 100%;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: starTwinkle 3s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* 主要激活界面 */
+.alpha-activation-main {
+  position: relative;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+/* 顶部控制栏 */
+.activation-header {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  padding: 20px 0;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.alpha-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #00ffff, #0080ff, #8000ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 10px 0;
+  text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+.alpha-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.energy-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 255, 255, 0.1);
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.energy-icon {
+  font-size: 1.2rem;
+  color: #ffa500;
+}
+
+.energy-amount {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00ffff;
+}
+
+.energy-unit {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.skip-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.skip-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Alpha激活核心 */
+.alpha-core-container {
+  position: relative;
+  margin: 40px 0;
+}
+
+.alpha-core {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  transition: all 0.5s ease;
+}
+
+.alpha-core.activating {
+  transform: scale(1.1);
+}
+
+.alpha-core.activated {
+  transform: scale(1.05);
+}
+
+/* 背景粒子 */
+.alpha-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.alpha-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #00ffff;
+  border-radius: 50%;
+  animation: particleFloat 4s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%, 100% { opacity: 0.3; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* 中央核心 */
+.core-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+}
+
+.alpha-sphere {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.3), rgba(0, 128, 255, 0.1));
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  animation: spherePulse 2s ease-in-out infinite;
+}
+
+.sphere-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(0, 255, 255, 0.3));
+}
+
+.sphere-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.2), transparent);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+@keyframes spherePulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Alpha符号 */
+.alpha-symbol {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  z-index: 10;
+}
+
+.alpha-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+}
+
+/* 轨道环 */
+.orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: orbitRotate 20s linear infinite;
+}
+
+.orbit-1 {
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  animation-duration: 15s;
+}
+
+.orbit-2 {
+  width: 140px;
+  height: 140px;
+  transform: translate(-50%, -50%);
+  animation-duration: 25s;
+  animation-direction: reverse;
+}
+
+.orbit-3 {
+  width: 160px;
+  height: 160px;
+  transform: translate(-50%, -50%);
+  animation-duration: 35s;
+}
+
+@keyframes orbitRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 脉冲效果 */
+.pulse-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 2px solid rgba(0, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: pulseExpand 3s ease-out infinite;
+}
+
+@keyframes pulseExpand {
+  0% {
+    width: 100px;
+    height: 100px;
+    opacity: 1;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+/* 激活控制面板 */
+.activation-controls {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.activation-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.info-item {
+  background: rgba(0, 20, 40, 0.6);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.info-label {
+  display: block;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+}
+
+.info-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #00ffff;
+}
+
+.info-value.activated {
+  color: #00ff00;
+}
+
+.info-value.activating {
+  color: #ffa500;
+}
+
+.info-value.pending {
+  color: #888;
+}
+
+/* 激活按钮 */
+.activation-button-container {
+  margin-bottom: 20px;
+}
+
+.activation-button {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 128, 255, 0.2));
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  color: #fff;
+  padding: 20px 40px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.activation-button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+}
+
+.activation-button.activating {
+  animation: buttonPulse 1s ease-in-out infinite;
+}
+
+.activation-button.activated {
+  background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.2));
+  border-color: rgba(0, 255, 0, 0.4);
+}
+
+.activation-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@keyframes buttonPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   justify-content: center;
 }
 
-.energy-burst {
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, rgba(255, 172, 47, 0.8) 0%, rgba(255, 172, 47, 0) 70%);
+.button-icon {
+  font-size: 1.3rem;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #fff;
   border-radius: 50%;
-  animation: burst 3s ease-out;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.button-energy {
   position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
-.reward-symbol {
-  font-size: 36px;
+.activation-button:hover .button-energy {
+  left: 100%;
+}
+
+/* 激活进度 */
+.activation-progress {
+  margin-top: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffff, #0080ff);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.progress-text {
+  font-size: 1rem;
+  color: #00ffff;
+  font-weight: 600;
+}
+
+/* 成功动画 */
+.success-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.5s ease;
+}
+
+.success-content {
+  text-align: center;
+  background: rgba(0, 20, 40, 0.9);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(20px);
+  position: relative;
+  animation: successPop 0.5s ease;
+}
+
+.success-icon {
+  font-size: 4rem;
+  color: #00ff00;
+  margin-bottom: 20px;
+  animation: iconBounce 1s ease;
+}
+
+.success-title {
+  font-size: 2rem;
   font-weight: 700;
-  color: #ffac2f;
-  animation: float-up 3s ease-out;
-  margin-bottom: 15px;
+  margin: 0 0 10px 0;
+  background: linear-gradient(45deg, #00ff00, #00ffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.streak-bonus {
-  font-size: 24px;
-  color: #ffac2f;
-  animation: fade-in 1s ease-in-out 1s forwards;
+.success-message {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 30px 0;
+}
+
+/* 成功动画按钮 */
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 30px 0 20px 0;
+  align-items: center;
+}
+
+.enter-trading-btn,
+.continue-btn {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 150, 255, 0.2));
+  border: 2px solid rgba(0, 255, 255, 0.4);
+  color: #ffffff;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+}
+
+.enter-trading-btn {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.2), rgba(150, 150, 150, 0.2));
+  border-color: rgba(150, 150, 150, 0.4);
+  font-size: 14px;
+  padding: 12px 25px;
+  min-width: 150px;
+}
+
+.enter-trading-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  border-color: rgba(255, 215, 0, 0.8);
+  box-shadow: 0 10px 40px rgba(255, 215, 0, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.continue-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: rgba(150, 150, 150, 0.6);
+  box-shadow: 0 8px 25px rgba(150, 150, 150, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.btn-icon {
+  font-size: 18px;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.btn-glow {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3), rgba(255, 165, 0, 0.2) 30%, transparent 70%);
   opacity: 0;
+  transition: opacity 0.4s ease;
+  mix-blend-mode: screen;
 }
 
-/* 动画效果 */
-@keyframes pulse {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
+.enter-trading-btn:hover .btn-glow {
+  opacity: 1;
+  animation: btnGlowRotate 3s linear infinite;
 }
 
-@keyframes float {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-  100% { transform: translateY(0); }
+@keyframes btnGlowRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes rotate {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+.success-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
-@keyframes burst {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.5); opacity: 1; }
-  100% { transform: scale(3); opacity: 0; }
+.success-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #00ff00;
+  border-radius: 50%;
+  animation: successParticle 2s ease-out forwards;
 }
 
-@keyframes float-up {
-  0% { transform: translateY(50px); opacity: 0; }
-  30% { transform: translateY(0); opacity: 1; }
-  70% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-30px); opacity: 0; }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes fade-in {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+@keyframes successPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes iconBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+@keyframes successParticle {
+  0% { opacity: 1; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0) translateY(-100px); }
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .alpha-activation-main {
+    padding: 15px;
+  }
+  
+  .activation-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .header-right {
+    justify-content: center;
+  }
+  
+  .alpha-core {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .activation-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .success-content {
+    margin: 20px;
+    padding: 30px 20px;
+  }
 }
 </style> 

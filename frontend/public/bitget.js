@@ -1,0 +1,1 @@
+window.openBitgetStrategy = function() { const bitgetUrl = "https://bitgetapp.com/zh-CN/copytrading/trader/bfbc4d7e87b43c57ac93/futures?vipCode=y9ru&inviteCode=b9b34a7386bb3953a29d910360&content=2.55.0_1749713176424_3_62"; window.open(bitgetUrl, "_blank", "noopener,noreferrer"); };

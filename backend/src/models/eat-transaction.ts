@@ -2,15 +2,17 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IEatTransaction extends Document {
   user: mongoose.Types.ObjectId;
-  type: 'claim' | 'transfer' | 'reward' | 'purchase' | 'consume';
+  type: 'mint' | 'burn' | 'transfer' | 'stake' | 'unstake' | 'reward';
   amount: number;
-  recipient?: mongoose.Types.ObjectId;
-  sender?: mongoose.Types.ObjectId;
-  tradeId?: mongoose.Types.ObjectId;
-  referralId?: mongoose.Types.ObjectId;
-  transactionHash?: string;
   description: string;
   status: 'pending' | 'completed' | 'failed';
+  metadata?: {
+    alphaPointsReceived?: number;
+    stakingTier?: string;
+    navValue?: number;
+    burnRate?: number;
+  };
+  txHash?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -24,31 +26,12 @@ const eatTransactionSchema = new Schema<IEatTransaction>(
     },
     type: {
       type: String,
-      enum: ['claim', 'transfer', 'reward', 'purchase', 'consume'],
+      enum: ['mint', 'burn', 'transfer', 'stake', 'unstake', 'reward'],
       required: true
     },
     amount: {
       type: Number,
       required: true
-    },
-    recipient: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    sender: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    tradeId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Trade'
-    },
-    referralId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    transactionHash: {
-      type: String
     },
     description: {
       type: String,
@@ -58,6 +41,16 @@ const eatTransactionSchema = new Schema<IEatTransaction>(
       type: String,
       enum: ['pending', 'completed', 'failed'],
       default: 'pending'
+    },
+    metadata: {
+      alphaPointsReceived: Number,
+      stakingTier: String,
+      navValue: Number,
+      burnRate: Number
+    },
+    txHash: {
+      type: String,
+      sparse: true
     }
   },
   {
@@ -65,11 +58,9 @@ const eatTransactionSchema = new Schema<IEatTransaction>(
   }
 );
 
-// 索引
+// 索引优化
 eatTransactionSchema.index({ user: 1, createdAt: -1 });
 eatTransactionSchema.index({ type: 1, status: 1 });
-eatTransactionSchema.index({ createdAt: -1 });
+eatTransactionSchema.index({ txHash: 1 }, { sparse: true });
 
-const EatTransaction = mongoose.model<IEatTransaction>('EatTransaction', eatTransactionSchema);
-
-export default EatTransaction; 
+export const EATTransaction = mongoose.model<IEatTransaction>('EATTransaction', eatTransactionSchema); 

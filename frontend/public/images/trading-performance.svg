@@ -1,0 +1,78 @@
+<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ff88;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景 -->
+  <rect width="1200" height="600" fill="url(#bgGradient)"/>
+  
+  <!-- 网格线 -->
+  <g stroke="rgba(0,212,255,0.1)" stroke-width="1">
+    <line x1="100" y1="50" x2="100" y2="450"/>
+    <line x1="300" y1="50" x2="300" y2="450"/>
+    <line x1="500" y1="50" x2="500" y2="450"/>
+    <line x1="700" y1="50" x2="700" y2="450"/>
+    <line x1="900" y1="50" x2="900" y2="450"/>
+    <line x1="1100" y1="50" x2="1100" y2="450"/>
+    
+    <line x1="100" y1="100" x2="1100" y2="100"/>
+    <line x1="100" y1="200" x2="1100" y2="200"/>
+    <line x1="100" y1="300" x2="1100" y2="300"/>
+    <line x1="100" y1="400" x2="1100" y2="400"/>
+  </g>
+  
+  <!-- 累积收益曲线 -->
+  <path d="M 100 400 Q 200 390 300 370 Q 400 350 500 320 Q 600 280 700 240 Q 800 200 900 160 Q 1000 120 1100 100" 
+        stroke="url(#lineGradient)" stroke-width="3" fill="none"/>
+  
+  <!-- 数据点 -->
+  <g fill="#00ff88">
+    <circle cx="100" cy="400" r="4"/>
+    <circle cx="300" cy="370" r="4"/>
+    <circle cx="500" cy="320" r="4"/>
+    <circle cx="700" cy="240" r="4"/>
+    <circle cx="900" cy="160" r="4"/>
+    <circle cx="1100" cy="100" r="4"/>
+  </g>
+  
+  <!-- 标题 -->
+  <text x="600" y="30" text-anchor="middle" fill="#00d4ff" font-family="Arial" font-size="24" font-weight="bold">
+    EZ Trading 实盘表现图表
+  </text>
+  
+  <!-- Y轴标签 -->
+  <g fill="#a0aec0" font-family="Arial" font-size="12">
+    <text x="90" y="55" text-anchor="end">$10k</text>
+    <text x="90" y="105" text-anchor="end">$8k</text>
+    <text x="90" y="205" text-anchor="end">$6k</text>
+    <text x="90" y="305" text-anchor="end">$4k</text>
+    <text x="90" y="405" text-anchor="end">$2k</text>
+  </g>
+  
+  <!-- X轴标签 -->
+  <g fill="#a0aec0" font-family="Arial" font-size="12">
+    <text x="100" y="470" text-anchor="middle">1月</text>
+    <text x="300" y="470" text-anchor="middle">2月</text>
+    <text x="500" y="470" text-anchor="middle">3月</text>
+    <text x="700" y="470" text-anchor="middle">4月</text>
+    <text x="900" y="470" text-anchor="middle">5月</text>
+    <text x="1100" y="470" text-anchor="middle">6月</text>
+  </g>
+  
+  <!-- 统计信息框 -->
+  <g>
+    <rect x="850" y="500" width="320" height="90" fill="rgba(0,0,0,0.8)" stroke="rgba(0,212,255,0.3)" stroke-width="1" rx="8"/>
+    <text x="870" y="520" fill="#00d4ff" font-family="Arial" font-size="14" font-weight="bold">关键指标</text>
+    <text x="870" y="535" fill="#ffffff" font-family="Arial" font-size="12">初始本金: <tspan fill="#a0aec0">$1,000</tspan></text>
+    <text x="870" y="550" fill="#ffffff" font-family="Arial" font-size="12">累积收益率: <tspan fill="#00ff88">+700%</tspan></text>
+    <text x="870" y="565" fill="#ffffff" font-family="Arial" font-size="12">最大回撤: <tspan fill="#ff6b6b">-4.27%</tspan></text>
+    <text x="870" y="580" fill="#ffffff" font-family="Arial" font-size="12">胜率: <tspan fill="#00ff88">66.7%</tspan> | 夏普比率: <tspan fill="#00ff88">3.59</tspan></text>
+  </g>
+</svg> 

@@ -17,6 +17,9 @@ export default defineConfig({
     port: 3000,
     open: true
   },
+  css: {
+    postcss: './postcss.config.js',
+  },
   build: {
     outDir: 'dist',
     minify: 'terser',
@@ -39,17 +42,18 @@ export default defineConfig({
       external: ['react', 'react-dom'],
       output: {
         manualChunks: {
-          vendor: ['vue'],
+          vendor: ['vue', 'vue-router', 'pinia'],
           solana: ['@solana/wallet-adapter-base', '@solana/wallet-adapter-phantom', '@solana/wallet-adapter-vue', '@solana/wallet-adapter-wallets'],
           particles: ['tsparticles-engine', 'vue3-particles'],
-          utils: ['gsap', 'howler']
+          utils: ['gsap', 'howler', 'axios', '@vueuse/core'],
+          validation: ['vee-validate', 'yup']
         }
       }
     }
   },
   optimizeDeps: {
     // 禁用对等依赖检查
-    include: ['vue'],
+    include: ['vue', 'vue-router', 'pinia', 'axios'],
     exclude: [],
     force: true,
     esbuildOptions: {

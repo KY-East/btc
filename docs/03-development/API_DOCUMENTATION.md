@@ -1,6 +1,6 @@
 # EZ Trading API文档
 
-本文档详细记录EZ Trading后端API接口，供前端开发团队参考。
+本文档详细记录EZ Trading后端API接口，供前端开发团队参考。基于双币经济模型（EAT + Alpha点数系统）设计。
 
 ## 基础信息
 
@@ -34,6 +34,7 @@
       "username": "user123",
       "email": "user@example.com",
       "eatBalance": 5,
+      "alphaPoints": 30,
       "referralCode": "XYZ789"
     }
   }
@@ -65,6 +66,8 @@
         "publicKey": "0x456..."
       },
       "eatBalance": 10,
+      "alphaPoints": 150,
+      "stakingTier": "atomic",
       "referralCode": "XYZ789"
     }
   }
@@ -87,6 +90,10 @@
         "publicKey": "0x456..."
       },
       "eatBalance": 10,
+      "alphaPoints": 150,
+      "alphaPointsCapacity": 800,
+      "stakingTier": "atomic",
+      "stakingAmount": 200,
       "referralCode": "XYZ789",
       "role": "user"
     }
@@ -112,6 +119,391 @@
   }
   ```
 
+## Alpha点数管理接口 (`/alpha-points`)
+
+### 获取Alpha点数余额
+
+- **URL**: `/alpha-points/balance`
+- **方法**: `GET`
+- **认证**: 需要
+- **成功响应** (200):
+  ```json
+  {
+    "alphaPoints": 150,
+    "capacity": 800,
+    "dailyFreeAllocation": 30,
+    "lastFreeAllocation": "2024-12-19T00:00:00.000Z",
+    "stakingBonus": 25,
+    "decayRate": 0.15
+  }
+  ```
+
+### EAT兑换Alpha点数
+
+- **URL**: `/alpha-points/exchange`
+- **方法**: `POST`
+- **认证**: 需要
+- **请求体**:
+  ```json
+  {
+    "eatAmount": 2.5,
+    "expectedAlphaPoints": 250
+  }
+  ```
+- **成功响应** (200):
+  ```json
+  {
+    "message": "兑换成功",
+    "transaction": {
+      "id": "tx_123...",
+      "eatAmount": 2.5,
+      "alphaPointsReceived": 250,
+      "burnedEAT": 2.125,
+      "exchangeRate": 100,
+      "burnRate": 0.85,
+      "timestamp": "2024-12-19T10:30:00.000Z"
+    },
+    "newBalances": {
+      "eatBalance": 7.5,
+      "alphaPoints": 400
+    }
+  }
+  ```
+
+### Alpha点数消耗记录
+
+- **URL**: `/alpha-points/consumption-history`
+- **方法**: `GET`
+- **认证**: 需要
+- **查询参数**:
+  - `page`: 页码 (默认: 1)
+  - `limit`: 每页数量 (默认: 20)
+  - `type`: 消耗类型 (可选)
+- **成功响应** (200):
+  ```json
+  {
+    "consumptions": [
+      {
+        "id": "cons_123...",
+        "type": "ai_conversation",
+        "subType": "market_analysis",
+        "amount": 25,
+        "description": "市场分析对话",
+        "timestamp": "2024-12-19T10:15:00.000Z"
+      },
+      {
+        "id": "cons_124...",
+        "type": "feature_unlock",
+        "subType": "historical_oracle",
+        "amount": 200,
+        "description": "历史神谕查询",
+        "timestamp": "2024-12-19T09:45:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 20,
+      "total": 45,
+      "totalPages": 3
+    }
+  }
+  ```
+
+### 每日免费Alpha点数领取
+
+- **URL**: `/alpha-points/daily-free`
+- **方法**: `POST`
+- **认证**: 需要
+- **成功响应** (200):
+  ```json
+  {
+    "message": "每日免费Alpha点数领取成功",
+    "pointsReceived": 30,
+    "stakingBonus": 10,
+    "newBalance": 190,
+    "nextAllocationTime": "2024-12-20T00:00:00.000Z"
+  }
+  ```
+
+## AI Agent对话接口 (`/ai-agent`)
+
+### 发起AI对话
+
+- **URL**: `/ai-agent/conversation`
+- **方法**: `POST`
+- **认证**: 需要
+- **请求体**:
+  ```json
+  {
+    "type": "market_analysis",
+    "message": "请分析一下BTC当前的市场趋势",
+    "context": {
+      "symbol": "BTC/USDT",
+      "timeframe": "1d"
+    }
+  }
+  ```
+- **成功响应** (200):
+  ```json
+  {
+    "conversation": {
+      "id": "conv_123...",
+      "type": "market_analysis",
+      "pointsCost": 25,
+      "response": {
+        "content": "基于当前技术分析，BTC正在测试关键阻力位...",
+        "confidence": 0.85,
+        "keyPoints": [
+          "突破$45,000阻力位",
+          "成交量放大确认",
+          "RSI显示超买信号"
+        ],
+        "recommendation": "建议等待回调至$42,000-43,000区间再考虑买入"
+      },
+      "timestamp": "2024-12-19T10:30:00.000Z"
+    },
+    "remainingPoints": 125,
+    "efficiency": 1.05
+  }
+  ```
+
+### 获取对话历史
+
+- **URL**: `/ai-agent/conversations`
+- **方法**: `GET`
+- **认证**: 需要
+- **查询参数**:
+  - `page`: 页码 (默认: 1)
+  - `limit`: 每页数量 (默认: 10)
+  - `type`: 对话类型 (可选)
+- **成功响应** (200):
+  ```json
+  {
+    "conversations": [
+      {
+        "id": "conv_123...",
+        "type": "market_analysis",
+        "pointsCost": 25,
+        "message": "请分析一下BTC当前的市场趋势",
+        "response": "基于当前技术分析，BTC正在测试关键阻力位...",
+        "timestamp": "2024-12-19T10:30:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 15,
+      "totalPages": 2
+    }
+  }
+  ```
+
+### 获取对话类型和价格
+
+- **URL**: `/ai-agent/conversation-types`
+- **方法**: `GET`
+- **认证**: 需要
+- **成功响应** (200):
+  ```json
+  {
+    "conversationTypes": [
+      {
+        "type": "quick_qa",
+        "name": "快速问答",
+        "description": "基础交易问题解答",
+        "pointsCost": 15,
+        "estimatedResponseTime": "10-30秒"
+      },
+      {
+        "type": "market_analysis",
+        "name": "市场分析",
+        "description": "深度市场趋势分析",
+        "pointsCost": 25,
+        "estimatedResponseTime": "30-60秒"
+      },
+      {
+        "type": "strategy_consultation",
+        "name": "策略咨询",
+        "description": "个性化交易策略建议",
+        "pointsCost": 50,
+        "estimatedResponseTime": "1-2分钟"
+      },
+      {
+        "type": "realtime_analysis",
+        "name": "实时解盘",
+        "description": "盘中实时行情解读",
+        "pointsCost": 20,
+        "estimatedResponseTime": "20-40秒"
+      },
+      {
+        "type": "risk_assessment",
+        "name": "风险评估",
+        "description": "投资组合风险分析",
+        "pointsCost": 40,
+        "estimatedResponseTime": "1-2分钟"
+      }
+    ]
+  }
+  ```
+
+## 质押系统接口 (`/staking`)
+
+### 获取质押信息
+
+- **URL**: `/staking/info`
+- **方法**: `GET`
+- **认证**: 需要
+- **成功响应** (200):
+  ```json
+  {
+    "currentStaking": {
+      "amount": 200,
+      "tier": "atomic",
+      "tierName": "原子级",
+      "startDate": "2024-12-01T00:00:00.000Z",
+      "lockPeriod": 30,
+      "unlockDate": "2024-12-31T00:00:00.000Z"
+    },
+    "benefits": {
+      "alphaPointsCapacityBonus": 300,
+      "dailyAlphaPointsBonus": 25,
+      "efficiencyBonus": 0.05,
+      "governanceWeight": 200
+    },
+    "availableForStaking": 50
+  }
+  ```
+
+### 创建质押
+
+- **URL**: `/staking/stake`
+- **方法**: `POST`
+- **认证**: 需要
+- **请求体**:
+  ```json
+  {
+    "amount": 100,
+    "lockPeriod": 30
+  }
+  ```
+- **成功响应** (200):
+  ```json
+  {
+    "message": "质押成功",
+    "staking": {
+      "id": "stake_123...",
+      "amount": 100,
+      "newTotalStaked": 300,
+      "newTier": "molecular",
+      "newTierName": "分子级",
+      "lockPeriod": 30,
+      "unlockDate": "2025-01-18T00:00:00.000Z"
+    },
+    "newBenefits": {
+      "alphaPointsCapacityBonus": 600,
+      "dailyAlphaPointsBonus": 50,
+      "efficiencyBonus": 0.10
+    },
+    "remainingEAT": 150
+  }
+  ```
+
+### 解除质押
+
+- **URL**: `/staking/unstake`
+- **方法**: `POST`
+- **认证**: 需要
+- **请求体**:
+  ```json
+  {
+    "amount": 50
+  }
+  ```
+- **成功响应** (200):
+  ```json
+  {
+    "message": "解除质押成功",
+    "unstaking": {
+      "id": "unstake_123...",
+      "amount": 50,
+      "newTotalStaked": 250,
+      "newTier": "atomic",
+      "newTierName": "原子级",
+      "penaltyApplied": false,
+      "penaltyAmount": 0
+    },
+    "newBenefits": {
+      "alphaPointsCapacityBonus": 300,
+      "dailyAlphaPointsBonus": 25,
+      "efficiencyBonus": 0.05
+    },
+    "newEATBalance": 200
+  }
+  ```
+
+### 获取质押等级信息
+
+- **URL**: `/staking/tiers`
+- **方法**: `GET`
+- **认证**: 不需要
+- **成功响应** (200):
+  ```json
+  {
+    "stakingTiers": [
+      {
+        "tier": "quantum",
+        "name": "量子级",
+        "minAmount": 50,
+        "maxAmount": 199,
+        "alphaPointsCapacityBonus": 100,
+        "dailyAlphaPointsBonus": 10,
+        "efficiencyBonus": 0,
+        "description": "入门级质押，提供基础特权"
+      },
+      {
+        "tier": "atomic",
+        "name": "原子级",
+        "minAmount": 200,
+        "maxAmount": 499,
+        "alphaPointsCapacityBonus": 300,
+        "dailyAlphaPointsBonus": 25,
+        "efficiencyBonus": 0.05,
+        "description": "中等质押，明显提升使用体验"
+      },
+      {
+        "tier": "molecular",
+        "name": "分子级",
+        "minAmount": 500,
+        "maxAmount": 999,
+        "alphaPointsCapacityBonus": 600,
+        "dailyAlphaPointsBonus": 50,
+        "efficiencyBonus": 0.10,
+        "description": "高级质押，显著优势和特权"
+      },
+      {
+        "tier": "fission",
+        "name": "裂变级",
+        "minAmount": 1000,
+        "maxAmount": 4999,
+        "alphaPointsCapacityBonus": 1200,
+        "dailyAlphaPointsBonus": 80,
+        "efficiencyBonus": 0.15,
+        "description": "鲸鱼级质押，专属特权"
+      },
+      {
+        "tier": "fusion",
+        "name": "聚变级",
+        "minAmount": 5000,
+        "maxAmount": null,
+        "alphaPointsCapacityBonus": 6000,
+        "dailyAlphaPointsBonus": 150,
+        "efficiencyBonus": 0.25,
+        "description": "超级质押，极大优势"
+      }
+    ]
+  }
+  ```
+
 ## 用户接口 (`/users`)
 
 ### 获取所有用户(仅管理员)
@@ -129,10 +521,11 @@
         "username": "user1",
         "email": "user1@example.com",
         "eatBalance": 15,
+        "alphaPoints": 120,
+        "stakingTier": "atomic",
         "role": "user",
         "createdAt": "2023-01-01T12:00:00.000Z"
-      },
-      // ...更多用户
+      }
     ]
   }
   ```
@@ -154,6 +547,9 @@
         "publicKey": "0x456..."
       },
       "eatBalance": 10,
+      "alphaPoints": 150,
+      "stakingTier": "atomic",
+      "stakingAmount": 200,
       "referralCode": "XYZ789",
       "role": "user"
     }
@@ -179,8 +575,7 @@
     "user": {
       "id": "60d5e...",
       "username": "newusername",
-      "email": "newemail@example.com",
-      // ...其他用户信息
+      "email": "newemail@example.com"
     }
   }
   ```

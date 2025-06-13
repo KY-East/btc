@@ -1,185 +1,201 @@
 <template>
-  <div class="home-hero">
-    <!-- 登录传送门页面 -->
-    <div class="quantum-portal" v-if="step === 0">
-      <!-- 量子核心 -->
-      <div class="crystal-core">
-        <div class="core-inner"></div>
-        <div class="core-aura"></div>
-        <div class="data-stream"></div>
-        <div class="energy-field"></div>
-      </div>
-      
-      <!-- 全息投影标题 -->
-      <div class="hologram-title">
-      <h1 class="main-title">EZ Trading</h1>
-        <div class="title-glow"></div>
-        <div class="matrix-code"></div>
-      </div>
-      
-      <!-- 能量文字副标题 -->
-      <div class="energy-subtitle">
-        <p class="subtitle">AI交易神谕</p>
-        <div class="subtitle-wave"></div>
-      </div>
-      
-      <!-- 量子触发器 -->
-      <div class="quantum-trigger">
-        <button class="connect-btn" @click="connectWallet">
-          <span class="btn-text">连接钱包</span>
-          <div class="energy-particles"></div>
-          <div class="btn-glow"></div>
-      </button>
-      </div>
-      
-      <!-- 功能简介 -->
-      <div class="quantum-features">
-        <div class="feature-item">
-          <div class="feature-icon">🧠</div>
-          <div class="feature-text">AI多智能体预测</div>
+  <div class="divine-hero">
+    <!-- 神圣背景层 -->
+    <div class="divine-background">
+      <div class="celestial-grid"></div>
+      <div class="divine-particles"></div>
+      <div class="sacred-geometry"></div>
+      <div class="ethereal-mist"></div>
+    </div>
+
+    <!-- 登录神殿页面 -->
+    <div class="sacred-temple" v-if="step === 0">
+      <!-- 神圣光环 -->
+      <div class="divine-halo">
+        <div class="inner-sanctum"></div>
+        <div class="sacred-rings">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">⚡</div>
-          <div class="feature-text">每日免费神谕</div>
+        <div class="divine-essence"></div>
+      </div>
+      
+      <!-- 神圣标题 -->
+      <div class="divine-title">
+        <h1 class="sacred-text">Oracle Alpha</h1>
+        <div class="title-blessing"></div>
+        <div class="divine-runes"></div>
+      </div>
+      
+      <!-- 神谕副标题 -->
+      <div class="oracle-subtitle">
+        <p class="sacred-subtitle">神谕交易终端</p>
+        <div class="subtitle-aura"></div>
+      </div>
+      
+      <!-- 神圣召唤按钮 -->
+      <div class="divine-summon">
+        <button class="sacred-button" @click="connectWallet">
+          <span class="button-text">启动神谕连接</span>
+          <div class="button-blessing"></div>
+          <div class="sacred-glow"></div>
+        </button>
+      </div>
+      
+      <!-- 神圣特性 -->
+      <div class="divine-features">
+        <div class="feature-shrine">
+          <div class="shrine-icon">⚡</div>
+          <div class="shrine-text">AI神谕预言</div>
+          <div class="shrine-blessing"></div>
         </div>
-        <div class="feature-item">
-          <div class="feature-icon">💰</div>
-          <div class="feature-text">自动跟单交易</div>
+        <div class="feature-shrine">
+          <div class="shrine-icon">🔮</div>
+          <div class="shrine-text">每日神圣启示</div>
+          <div class="shrine-blessing"></div>
         </div>
+        <div class="feature-shrine">
+          <div class="shrine-icon">💎</div>
+          <div class="shrine-text">自动交易神术</div>
+          <div class="shrine-blessing"></div>
+        </div>
+      </div>
+      
+      <!-- 连接仪式指示器 -->
+      <div class="connection-ritual" v-if="isConnecting">
+        <div class="ritual-circle">
+          <div class="ritual-inner"></div>
+          <div class="ritual-symbols"></div>
+        </div>
+        <div class="ritual-text">正在建立神圣连接...</div>
+      </div>
     </div>
     
-      <!-- 连接过程指示器 -->
-      <div class="connection-status" v-if="isConnecting">
-        <div class="status-ring"></div>
-        <div class="status-text">建立量子连接中...</div>
-      </div>
-    </div>
-    
-    <!-- 神谕中心页面 -->
-    <div class="center-content oracle-view" v-else-if="step === 1">
-      <div class="terminal-header">
-        <div class="terminal-title">Oracle Alpha v1.0</div>
-        <div class="user-data">
-          <div class="wallet-info">{{ shortenAddress(wallet.address) }}</div>
-          <div class="eat-balance">
-            <span class="eat-icon">₮</span>
-            <span class="eat-amount">{{ wallet.eat.toFixed(2) }} EAT</span>
+    <!-- 神谕圣殿页面 -->
+    <div class="oracle-sanctuary" v-else-if="step === 1">
+      <div class="sanctuary-header">
+        <div class="sanctuary-title">Oracle Alpha Sanctuary</div>
+        <div class="divine-status">
+          <div class="wallet-shrine">{{ shortenAddress(wallet.address) }}</div>
+          <div class="eat-sanctuary">
+            <span class="eat-symbol">⚡</span>
+            <span class="eat-value">{{ wallet.eat.toFixed(2) }} EAT</span>
           </div>
         </div>
       </div>
       
-      <OracleScroll 
-        ref="oracleScrollRef"
-        :is-locked="!detailUnlocked" 
-        :oracle-data="oracle"
-        @unlock="unlockDetail"
-        @expand="handleOracleExpand"
+      <DailyWorship 
+        ref="dailyWorshipRef"
+        @activation-complete="handleActivationComplete"
+        @skip-activation="handleSkipActivation"
+        @enter-trading="handleEnterTrading"
       />
       
-      <div class="bottom-controls">
+      <div class="sanctuary-controls">
         <AiShrine 
           :cooldown-seconds="claimedToday ? 86400 : 0"
           @worship-complete="claimDailyEAT"
         />
         
-        <div class="action-buttons">
+        <div class="divine-actions">
           <button 
             v-if="detailUnlocked" 
-            class="action-btn enter-btn" 
+            class="divine-btn ascension-btn" 
             @click="step = 2"
           >
-            <span class="btn-icon">💫</span>
-            <span class="btn-text">进入EZ Trading</span>
-            <div class="btn-glow-effect"></div>
+            <span class="btn-symbol">✨</span>
+            <span class="btn-label">进入交易圣域</span>
+            <div class="btn-divine-glow"></div>
           </button>
           
-          <button class="action-btn nav-info-btn" @click="showNavInfo = !showNavInfo">
-            <span class="btn-icon">📊</span>
-            <span class="btn-text">NAV参考</span>
+          <button class="divine-btn oracle-btn" @click="showNavInfo = !showNavInfo">
+            <span class="btn-symbol">📊</span>
+            <span class="btn-label">神谕价值</span>
           </button>
         </div>
-        </div>
-        
-      <transition name="slide-up">
-        <div v-if="showNavInfo" class="nav-info-card">
-          <div class="nav-info-header">EAT代币NAV估值</div>
-          <div class="nav-info-value">1 EAT ≈ {{ navValue }} USD</div>
-          <div class="nav-info-desc">基于过去30天策略表现</div>
-          <div class="nav-info-note">NAV每24小时更新一次</div>
       </div>
+        
+      <transition name="divine-reveal">
+        <div v-if="showNavInfo" class="oracle-wisdom-card">
+          <div class="wisdom-header">EAT神谕价值</div>
+          <div class="wisdom-value">1 EAT ≈ {{ navValue }} USD</div>
+          <div class="wisdom-desc">基于30日神谕表现</div>
+          <div class="wisdom-note">每日神圣更新</div>
+        </div>
       </transition>
     </div>
     
-    <transition name="fade">
-      <div class="oracle-detail-modal" v-if="showDetail">
-        <div class="modal-content">
-          <div class="modal-header">
-            <div class="modal-title-section">
-              <div class="glowing-icon">🔮</div>
-              <h2>神谕深度分析</h2>
+    <transition name="divine-fade">
+      <div class="oracle-revelation-modal" v-if="showDetail">
+        <div class="revelation-content">
+          <div class="revelation-header">
+            <div class="revelation-title-section">
+              <div class="sacred-icon">🔮</div>
+              <h2>神谕深度启示</h2>
             </div>
-            <div class="corner-badge">Alpha级</div>
+            <div class="divine-badge">Alpha级</div>
           </div>
           
-          <div class="data-grid">
-            <div class="data-card">
-              <div class="data-label">标的资产</div>
-              <div class="data-value highlight">{{ oracle.symbol }}</div>
+          <div class="wisdom-grid">
+            <div class="wisdom-card">
+              <div class="wisdom-label">神谕标的</div>
+              <div class="wisdom-value highlight">{{ oracle.symbol }}</div>
             </div>
             
-            <div class="data-card">
-              <div class="data-label">建议操作</div>
-              <div class="data-value action" :class="oracle.actionClass">{{ oracle.action }}</div>
+            <div class="wisdom-card">
+              <div class="wisdom-label">神圣指引</div>
+              <div class="wisdom-value action" :class="oracle.actionClass">{{ oracle.action }}</div>
             </div>
             
-            <div class="data-card">
-              <div class="data-label">市场情绪</div>
-              <div class="data-value">{{ oracle.sentiment }}</div>
+            <div class="wisdom-card">
+              <div class="wisdom-label">市场神意</div>
+              <div class="wisdom-value">{{ oracle.sentiment }}</div>
             </div>
             
-            <div class="data-card">
-              <div class="data-label">交易量变化</div>
-              <div class="data-value">{{ oracle.volumeChange }}</div>
+            <div class="wisdom-card">
+              <div class="wisdom-label">能量变化</div>
+              <div class="wisdom-value">{{ oracle.volumeChange }}</div>
             </div>
           </div>
           
-          <div class="analysis-section">
+          <div class="revelation-section">
             <div class="section-title">
-              <div class="section-icon">📊</div>
-              <div>决策依据</div>
+              <div class="section-symbol">📊</div>
+              <div>神谕依据</div>
             </div>
-            <p class="reason-text">{{ oracle.reason }}</p>
+            <p class="revelation-text">{{ oracle.reason }}</p>
           </div>
           
-          <div class="analysis-section">
+          <div class="revelation-section">
             <div class="section-title">
-              <div class="section-icon">🧠</div>
-              <div>AI分析摘要</div>
+              <div class="section-symbol">🧠</div>
+              <div>AI神谕摘要</div>
             </div>
-            <p class="detail-text">{{ oracle.detail }}</p>
+            <p class="divine-text">{{ oracle.detail }}</p>
           </div>
           
-          <div class="risk-assessment">
-            <div class="risk-label">风险等级</div>
+          <div class="divine-risk-assessment">
+            <div class="risk-label">神圣风险等级</div>
             <div class="risk-meter" :class="oracle.riskLevel"></div>
             <div class="risk-value">{{ oracle.riskLevel }}</div>
           </div>
           
-          <div class="bot-signatures">
-            <div class="bot-tag">技术面分析 ✓</div>
-            <div class="bot-tag">链上数据 ✓</div>
-            <div class="bot-tag">社交情绪 ✓</div>
-            <div class="bot-tag">机构流向 ✓</div>
+          <div class="oracle-signatures">
+            <div class="oracle-seal">技术神谕 ✓</div>
+            <div class="oracle-seal">链上神意 ✓</div>
+            <div class="oracle-seal">情绪神谕 ✓</div>
+            <div class="oracle-seal">机构神意 ✓</div>
           </div>
           
-          <button class="large-quantum-button" @click="showDetail = false; step = 2">
-            <span class="btn-text">进入EZ Trading</span>
-            <span class="btn-arrow">→</span>
-            <div class="quantum-button-glow"></div>
+          <button class="divine-ascension-button" @click="showDetail = false; step = 2">
+            <span class="ascension-text">进入交易圣域</span>
+            <span class="ascension-arrow">→</span>
+            <div class="divine-ascension-glow"></div>
           </button>
           
-          <div class="modal-footnote">下一次神谕将在24小时后重置</div>
-          <div class="burn-info">已燃烧 0.5 EAT (50%)</div>
+          <div class="divine-footnote">下一次神谕将在24小时后降临</div>
+          <div class="sacred-burn-info">已献祭 0.5 EAT (50%)</div>
         </div>
       </div>
     </transition>
@@ -188,7 +204,7 @@
 
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from 'vue';
-import OracleScroll from './OracleScroll.vue';
+import DailyWorship from './DailyWorship.vue';
 import AiShrine from './AiShrine.vue';
 
 const step = ref(0); // 0:未连接钱包 1:已连接 2:已进入主站
@@ -222,7 +238,7 @@ const oracle = reactive({
   date: new Date() // 添加日期属性用于OracleScroll组件
 });
 
-const oracleScrollRef = ref(null);
+const dailyWorshipRef = ref(null);
 
 function connectWallet() {
   isConnecting.value = true;
@@ -258,8 +274,8 @@ function unlockDetail() {
     return;
   }
   
-  if (oracleScrollRef.value) {
-    oracleScrollRef.value.showUnlockAnimation();
+  if (dailyWorshipRef.value) {
+    dailyWorshipRef.value.showUnlockAnimation();
   }
   
   // 播放解锁音效
@@ -304,8 +320,17 @@ function showSuccessToast(message) {
   }, 3000);
 }
 
-function handleOracleExpand(expanded) {
-  console.log('Oracle expanded:', expanded);
+function handleActivationComplete() {
+  console.log('Activation complete');
+}
+
+function handleSkipActivation() {
+  console.log('Activation skipped');
+}
+
+function handleEnterTrading() {
+  console.log('Enter trading');
+  step.value = 2; // 直接进入交易终端
 }
 
 // 粒子动画函数
@@ -415,620 +440,341 @@ defineExpose({
 </script>
 
 <style scoped>
-.home-hero {
+/* 神圣主容器 */
+.divine-hero {
   position: relative;
-  z-index: 1;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1200px;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at center,
+    #0a0a1a 0%,
+    #050510 30%,
+    #020208 60%,
+    #000000 100%
+  );
 }
 
-/* 量子传送门样式 */
-.quantum-portal {
+/* 神圣背景层 */
+.divine-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.celestial-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: celestialDrift 60s linear infinite;
+}
+
+.divine-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,215,0,0.3)"/><circle cx="80" cy="40" r="0.5" fill="rgba(255,255,255,0.4)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,215,0,0.2)"/><circle cx="70" cy="10" r="0.8" fill="rgba(255,255,255,0.3)"/><circle cx="10" cy="60" r="1.2" fill="rgba(255,215,0,0.25)"/></svg>') repeat;
+  background-size: 200px 200px;
+  animation: particleFloat 40s linear infinite;
+  opacity: 0.6;
+}
+
+.sacred-geometry {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 800px;
+  height: 800px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    transparent 40%,
+    rgba(255, 215, 0, 0.02) 41%,
+    rgba(255, 215, 0, 0.02) 42%,
+    transparent 43%
+  );
+  border-radius: 50%;
+  animation: geometryRotate 120s linear infinite;
+}
+
+.ethereal-mist {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 30% 70%,
+    rgba(138, 43, 226, 0.08) 0%,
+    transparent 50%
+  ),
+  radial-gradient(
+    ellipse at 70% 30%,
+    rgba(255, 215, 0, 0.05) 0%,
+    transparent 50%
+  );
+  animation: mistFlow 80s ease-in-out infinite;
+}
+
+/* 神圣神殿 */
+.sacred-temple {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 1000px;
-  min-height: 80vh;
-  padding: 2rem;
-  perspective: 1000px;
-}
-
-/* 核心水晶样式 */
-.crystal-core {
-  position: relative;
-  width: 180px;
-  height: 180px;
-  margin-bottom: 2rem;
-  transform-style: preserve-3d;
-  animation: float 8s ease-in-out infinite, rotate3d 20s linear infinite;
-}
-
-.core-inner {
-  position: absolute;
-  top: 10%;
-  left: 10%;
-  width: 80%;
-  height: 80%;
-  background: radial-gradient(
-    circle, 
-    rgba(0, 180, 255, 0.2) 0%, 
-    rgba(0, 100, 200, 0.3) 40%,
-    rgba(50, 50, 150, 0.4) 70%
-  );
-  border-radius: 40%;
-  transform-style: preserve-3d;
-  transform: translateZ(20px);
-  box-shadow: 
-    0 0 30px rgba(0, 150, 255, 0.3),
-    inset 0 0 30px rgba(0, 200, 255, 0.4);
-  filter: blur(2px);
-  animation: pulse 4s ease-in-out infinite alternate;
-}
-
-.core-aura {
-  position: absolute;
-  top: -10%;
-  left: -10%;
-  width: 120%;
-  height: 120%;
-  border-radius: 40%;
-  background: radial-gradient(
-    circle, 
-    rgba(0, 150, 255, 0.4) 0%,
-    rgba(0, 80, 200, 0.2) 40%,
-    rgba(0, 50, 150, 0.1) 60%,
-    rgba(0, 0, 100, 0) 80%
-  );
-  filter: blur(15px);
-  animation: auraPulse 6s ease-in-out infinite alternate;
-}
-
-.data-stream {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 40%;
-  overflow: hidden;
-  opacity: 0.7;
-}
-
-.data-stream::before {
-  content: '';
-  position: absolute;
-  top: -100%;
-  left: -100%;
-  width: 300%;
-  height: 300%;
-  background: linear-gradient(
-    45deg,
-    transparent 0%,
-    rgba(0, 200, 255, 0.1) 30%,
-    rgba(0, 150, 255, 0.2) 47%,
-    rgba(0, 100, 255, 0.1) 53%,
-    transparent 80%
-  );
-  animation: dataFlow 8s linear infinite;
-}
-
-.energy-field {
-  position: absolute;
-  top: -30%;
-  left: -30%;
-  width: 160%;
-  height: 160%;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle, 
-    rgba(0, 180, 255, 0.1) 0%,
-    rgba(0, 120, 255, 0.05) 40%,
-    rgba(80, 80, 255, 0.02) 60%,
-    rgba(0, 0, 0, 0) 80%
-  );
-  filter: blur(10px);
-  animation: fieldPulse 10s ease-in-out infinite;
-}
-
-/* 能量微粒子 */
-.energy-micro-particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #00c8ff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(0, 200, 255, 0.8);
-  opacity: 0.8;
-  animation: particleFly 1s forwards;
+  max-width: 1200px;
+  padding: 3rem;
   z-index: 10;
 }
 
-@keyframes particleFly {
-  0% {
-    transform: scale(0.3);
-    opacity: 0.1;
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    transform: 
-      translate(
-        calc(cos(var(--angle)) * var(--distance)),
-        calc(sin(var(--angle)) * var(--distance))
-      );
-    opacity: 0;
-  }
-}
-
-/* 标题全息投影 */
-.hologram-title {
+/* 神圣光环 */
+.divine-halo {
   position: relative;
-  margin-bottom: 1.5rem;
-  transform-style: preserve-3d;
+  width: 300px;
+  height: 300px;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.main-title {
-  font-size: 5rem;
-  color: rgba(255, 255, 255, 0.95);
-  letter-spacing: 3px;
-  font-weight: bold;
+.inner-sanctum {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.4) 0%,
+    rgba(255, 215, 0, 0.2) 30%,
+    rgba(138, 43, 226, 0.1) 60%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  box-shadow: 
+    0 0 40px rgba(255, 215, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  animation: sanctumPulse 4s ease-in-out infinite;
+}
+
+.sacred-rings {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: linear-gradient(45deg, 
+    rgba(255, 215, 0, 0.3), 
+    rgba(138, 43, 226, 0.2), 
+    rgba(255, 215, 0, 0.3)
+  ) border-box;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.ring-1 {
+  width: 200px;
+  height: 200px;
+  top: 50px;
+  left: 50px;
+  animation: ringRotate 20s linear infinite;
+}
+
+.ring-2 {
+  width: 250px;
+  height: 250px;
+  top: 25px;
+  left: 25px;
+  animation: ringRotate 30s linear infinite reverse;
+}
+
+.ring-3 {
+  width: 300px;
+  height: 300px;
+  top: 0;
+  left: 0;
+  animation: ringRotate 40s linear infinite;
+}
+
+.divine-essence {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.05) 40%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: essencePulse 6s ease-in-out infinite;
+}
+
+/* 神圣标题 */
+.divine-title {
+  position: relative;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sacred-text {
+  font-size: 4.5rem;
+  font-weight: 300;
+  color: transparent;
+  background: linear-gradient(
+    135deg,
+    #ffd700 0%,
+    #ffffff 25%,
+    #ffd700 50%,
+    #8a2be2 75%,
+    #ffd700 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
   text-shadow: 
-    0 0 10px rgba(0, 200, 255, 0.8),
-    0 0 20px rgba(0, 150, 255, 0.6),
-    0 0 30px rgba(0, 100, 255, 0.4);
-  animation: titleFloat 5s ease-in-out infinite;
-  user-select: none;
+    0 0 30px rgba(255, 215, 0, 0.5),
+    0 0 60px rgba(255, 215, 0, 0.3),
+    0 0 90px rgba(138, 43, 226, 0.2);
+  letter-spacing: 3px;
+  animation: titleShimmer 8s ease-in-out infinite;
 }
 
-.title-glow {
+.title-blessing {
   position: absolute;
   top: -20%;
   left: -10%;
   width: 120%;
-  height: 150%;
+  height: 140%;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 200, 255, 0.15) 0%,
-    rgba(0, 100, 255, 0.1) 30%,
-    rgba(0, 0, 0, 0) 70%
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.05) 30%,
+    transparent 70%
   );
-  filter: blur(10px);
+  filter: blur(20px);
   z-index: -1;
-  opacity: 0.8;
-  animation: glowPulse 4s ease-in-out infinite alternate;
+  animation: blessingPulse 5s ease-in-out infinite;
 }
 
-.matrix-code {
+.divine-runes {
   position: absolute;
   top: -50%;
   left: 0;
   width: 100%;
   height: 200%;
-  z-index: -1;
   overflow: hidden;
-  opacity: 0.2;
+  opacity: 0.3;
 }
 
-.matrix-char {
+/* 神谕副标题 */
+.oracle-subtitle {
+  position: relative;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.sacred-subtitle {
+  font-size: 1.8rem;
+  font-weight: 200;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.subtitle-aura {
   position: absolute;
-  top: -20px;
-  color: #00ff99;
-  font-size: 14px;
-  animation: matrixRain 2s linear forwards;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 215, 0, 0.6) 50%,
+    transparent 100%
+  );
+  animation: auraFlow 3s ease-in-out infinite;
 }
 
-@keyframes matrixRain {
-  0% {
-    top: -20px;
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.8;
-}
-  90% {
-    opacity: 0.8;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-/* 能量文字副标题 */
-.energy-subtitle {
+/* 神圣召唤按钮 */
+.divine-summon {
   position: relative;
   margin-bottom: 3rem;
 }
 
-.subtitle {
-  font-size: 1.8rem;
-  color: rgba(200, 240, 255, 0.9);
-  text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
-  font-weight: normal;
-  letter-spacing: 2px;
-}
-
-.subtitle-wave {
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 5px;
+.sacred-button {
+  position: relative;
   background: linear-gradient(
-    90deg,
-    rgba(0, 150, 255, 0) 0%,
-    rgba(0, 200, 255, 0.8) 50%,
-    rgba(0, 150, 255, 0) 100%
+    135deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.1) 50%,
+    rgba(255, 215, 0, 0.1) 100%
   );
-  filter: blur(2px);
-  animation: waveFlow 3s ease-in-out infinite;
-}
-
-/* 量子触发器按钮 */
-.quantum-trigger {
-  position: relative;
-  margin-bottom: 2.5rem;
-}
-
-.connect-btn {
-  position: relative;
-  background: rgba(0, 50, 100, 0.4);
+  border: 2px solid transparent;
+  background-clip: padding-box;
   color: #ffffff;
-  font-size: 1.3rem;
-  font-weight: bold;
+  font-size: 1.4rem;
+  font-weight: 300;
   letter-spacing: 1px;
-  border: 1px solid rgba(0, 200, 255, 0.4);
   border-radius: 50px;
-  padding: 16px 60px;
+  padding: 18px 50px;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   box-shadow: 
-    0 0 20px rgba(0, 200, 255, 0.3), 
-    inset 0 0 10px rgba(0, 150, 255, 0.2);
-  z-index: 5;
+    0 0 30px rgba(255, 215, 0, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
 }
 
-.connect-btn:hover {
-  background: rgba(0, 70, 130, 0.6);
-  transform: translateY(-3px);
-  box-shadow: 
-    0 0 30px rgba(0, 200, 255, 0.5), 
-    inset 0 0 15px rgba(0, 180, 255, 0.3);
-}
-
-.connect-btn:active {
-  transform: translateY(1px);
-}
-
-.energy-particles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.btn-glow {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(0, 200, 255, 0.5) 0%,
-    rgba(0, 150, 255, 0.3) 20%,
-    rgba(0, 100, 255, 0.1) 40%,
-    rgba(0, 0, 0, 0) 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  mix-blend-mode: screen;
-  filter: blur(10px);
-}
-
-.connect-btn:hover .btn-glow {
-  opacity: 1;
-  animation: rotatePulse 3s linear infinite;
-}
-
-/* 功能特性 */
-.quantum-features {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1rem;
-}
-
-.feature-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(10, 30, 60, 0.3);
-  border: 1px solid rgba(0, 150, 255, 0.2);
-  border-radius: 10px;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 0 15px rgba(0, 150, 255, 0.15);
-  transition: all 0.3s ease;
-}
-
-.feature-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
-  border-color: rgba(0, 200, 255, 0.4);
-  background: rgba(15, 40, 80, 0.5);
-}
-
-.feature-icon {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.feature-text {
-  font-size: 0.9rem;
-  color: rgba(200, 230, 255, 0.9);
-  text-align: center;
-}
-
-/* 连接状态 */
-.connection-status {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(5, 15, 40, 0.85);
-  z-index: 10;
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.status-ring {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 3px solid transparent;
-  border-top: 3px solid rgba(0, 200, 255, 0.8);
-  border-right: 3px solid rgba(0, 100, 255, 0.6);
-  animation: rotate 1.5s linear infinite;
-  box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
-  margin-bottom: 1.5rem;
-}
-
-.status-text {
-  font-size: 1.2rem;
-  color: rgba(200, 230, 255, 0.9);
-  text-shadow: 0 0 10px rgba(0, 150, 255, 0.7);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* 原有样式保留 */
-.center-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(10, 15, 30, 0.85);
-  border-radius: 12px;
-  padding: 48px 32px;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(0, 150, 255, 0.15);
-  border: 1px solid rgba(0, 200, 255, 0.3);
-  max-width: 90vw;
-  position: relative;
-  overflow: hidden;
-}
-
-.center-content::before {
+.sacred-button::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #0ff, transparent);
-  animation: scanline 2s linear infinite;
-}
-
-@keyframes scanline {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* 保留其他现有样式 */
-.terminal-header,
-.oracle-view,
-.oracle-detail-modal,
-.terminal-title,
-.terminal-status,
-.status-online,
-.status-active,
-.user-data,
-.wallet-info,
-.eat-balance,
-.eat-icon,
-.eat-amount,
-.bottom-controls,
-.action-buttons,
-.action-btn,
-.btn-icon,
-.btn-text,
-.enter-btn,
-.nav-info-btn,
-.nav-info-card,
-.slide-up-enter-active,
-.slide-up-leave-active,
-.slide-up-enter-from,
-.slide-up-leave-to,
-.fade-enter-active,
-.fade-leave-active,
-.fade-enter-from,
-.fade-leave-to {
-  /* 保留现有样式定义 */
-}
-
-/* 动画关键帧 */
-@keyframes float {
-  0% { transform: translateY(0) rotateX(0) rotateY(0); }
-  25% { transform: translateY(-10px) rotateX(5deg) rotateY(2deg); }
-  50% { transform: translateY(0) rotateX(0) rotateY(0); }
-  75% { transform: translateY(10px) rotateX(-5deg) rotateY(-2deg); }
-  100% { transform: translateY(0) rotateX(0) rotateY(0); }
-}
-
-@keyframes rotate3d {
-  0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
-  100% { transform: rotateX(360deg) rotateY(180deg) rotateZ(360deg); }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-  100% { opacity: 0.7; transform: scale(1); }
-}
-
-@keyframes auraPulse {
-  0% { opacity: 0.5; transform: scale(1); filter: blur(15px); }
-  50% { opacity: 0.8; transform: scale(1.1); filter: blur(20px); }
-  100% { opacity: 0.5; transform: scale(1); filter: blur(15px); }
-}
-
-@keyframes dataFlow {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-}
-
-@keyframes fieldPulse {
-  0% { transform: scale(1) rotate(0deg); opacity: 0.1; }
-  25% { transform: scale(1.1) rotate(90deg); opacity: 0.2; }
-  50% { transform: scale(1) rotate(180deg); opacity: 0.1; }
-  75% { transform: scale(0.9) rotate(270deg); opacity: 0.2; }
-  100% { transform: scale(1) rotate(360deg); opacity: 0.1; }
-}
-
-@keyframes titleFloat {
-  0% { transform: translateY(0) translateZ(0); }
-  50% { transform: translateY(-5px) translateZ(20px); }
-  100% { transform: translateY(0) translateZ(0); }
-}
-
-@keyframes glowPulse {
-  0% { opacity: 0.6; transform: scale(1); }
-  100% { opacity: 1; transform: scale(1.1); }
-}
-
-@keyframes waveFlow {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-@keyframes rotatePulse {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* 神谕中心页面 */
-.oracle-view {
-  width: 100%;
-  max-width: 1200px;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem;
-  position: relative;
-  background: rgba(5, 10, 25, 0.4);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(0, 150, 255, 0.3);
-  box-shadow: 
-    0 0 40px rgba(0, 100, 200, 0.2),
-    inset 0 0 20px rgba(0, 150, 255, 0.1);
-  overflow: hidden;
-  z-index: 10;
-}
-
-.action-btn {
-  background: rgba(0, 70, 150, 0.5);
-  border: 2px solid rgba(0, 200, 255, 0.6);
-  color: #fff;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    45deg,
+    #ffd700,
+    #8a2be2,
+    #ffd700,
+    #ffffff,
+    #ffd700
+  );
   border-radius: 50px;
-  padding: 12px 30px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  position: relative;
-  overflow: hidden;
+  z-index: -1;
+  animation: borderShimmer 4s linear infinite;
+}
+
+.sacred-button:hover {
+  transform: translateY(-3px) scale(1.02);
   box-shadow: 
-    0 0 25px rgba(0, 150, 255, 0.3),
-    inset 0 0 15px rgba(0, 180, 255, 0.2);
-  text-shadow: 0 0 10px rgba(0, 200, 255, 0.8);
-  min-width: 220px;
-  justify-content: center;
-  margin: 15px 0;
+    0 10px 40px rgba(255, 215, 0, 0.4),
+    inset 0 0 30px rgba(255, 255, 255, 0.08);
 }
 
-.action-btn:hover {
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 
-    0 8px 30px rgba(0, 180, 255, 0.5),
-    inset 0 0 20px rgba(0, 200, 255, 0.3);
-  border-color: rgba(0, 255, 255, 0.8);
-}
-
-.action-btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.enter-btn {
-  background: rgba(0, 100, 180, 0.6);
-  border: 2px solid rgba(0, 220, 255, 0.7);
-  padding: 15px 50px;
-  font-size: 1.4rem;
-  min-width: 280px;
-  box-shadow: 
-    0 0 35px rgba(0, 180, 255, 0.4),
-    inset 0 0 25px rgba(0, 200, 255, 0.3);
-}
-
-.btn-icon {
-  font-size: 1.5rem;
-  margin-right: 5px;
-}
-
-.btn-glow-effect {
+.button-blessing {
   position: absolute;
   top: -100%;
   left: -100%;
@@ -1036,172 +782,553 @@ defineExpose({
   height: 300%;
   background: radial-gradient(
     circle,
-    rgba(0, 255, 255, 0.4) 0%,
-    rgba(0, 150, 255, 0.2) 30%,
+    rgba(255, 215, 0, 0.3) 0%,
+    rgba(138, 43, 226, 0.2) 30%,
     transparent 70%
   );
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
   mix-blend-mode: screen;
-  transform: rotate(30deg);
 }
 
-.action-btn:hover .btn-glow-effect {
+.sacred-button:hover .button-blessing {
   opacity: 1;
-  animation: rotate-glow 3s linear infinite;
+  animation: blessingRotate 3s linear infinite;
 }
 
-.large-quantum-button {
-  background: rgba(0, 100, 200, 0.7);
-  border: 3px solid rgba(0, 220, 255, 0.8);
-  color: #fff;
-  border-radius: 50px;
-  padding: 18px 60px;
-  font-size: 1.5rem;
-  font-weight: bold;
+.sacred-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200%;
+  height: 200%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.2) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.sacred-button:hover .sacred-glow {
+  opacity: 1;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* 神圣特性 */
+.divine-features {
   display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+.feature-shrine {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.05) 0%,
+    rgba(138, 43, 226, 0.05) 50%,
+    rgba(255, 215, 0, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 15px;
+  padding: 2rem 1.5rem;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+.feature-shrine:hover {
+  transform: translateY(-8px) scale(1.05);
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 
+    0 15px 40px rgba(255, 215, 0, 0.2),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+.shrine-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+}
+
+.shrine-text {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.shrine-blessing {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 50%;
+}
+
+.feature-shrine:hover .shrine-blessing {
+  opacity: 1;
+  animation: blessingPulse 2s ease-in-out infinite;
+}
+
+/* 连接仪式 */
+.connection-ritual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
-  cursor: pointer;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 20;
+}
+
+.ritual-circle {
   position: relative;
-  overflow: hidden;
+  width: 150px;
+  height: 150px;
+  margin-bottom: 2rem;
+}
+
+.ritual-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.3) 0%,
+    rgba(138, 43, 226, 0.2) 50%,
+    transparent 100%
+  );
+  animation: ritualPulse 2s ease-in-out infinite;
+}
+
+.ritual-symbols {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px solid transparent;
+  border-top: 2px solid rgba(255, 215, 0, 0.6);
+  border-right: 2px solid rgba(138, 43, 226, 0.4);
+  border-radius: 50%;
+  animation: ritualRotate 3s linear infinite;
+}
+
+.ritual-text {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  font-weight: 300;
+  letter-spacing: 1px;
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+/* 神谕圣殿 */
+.oracle-sanctuary {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.02) 0%,
+    rgba(138, 43, 226, 0.02) 50%,
+    rgba(255, 215, 0, 0.02) 100%
+  );
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  border-radius: 25px;
+  backdrop-filter: blur(15px);
   box-shadow: 
-    0 0 40px rgba(0, 180, 255, 0.5),
-    inset 0 0 25px rgba(0, 200, 255, 0.4);
-  text-shadow: 0 0 15px rgba(0, 220, 255, 1);
-  margin: 25px auto;
-  min-width: 320px;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  z-index: 5;
+    0 0 50px rgba(255, 215, 0, 0.1),
+    inset 0 0 30px rgba(255, 255, 255, 0.02);
+  z-index: 10;
 }
 
-.large-quantum-button:hover {
-  transform: translateY(-8px) scale(1.08);
+.sanctuary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.sanctuary-title {
+  font-size: 2rem;
+  font-weight: 200;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    #ffd700 0%,
+    #ffffff 50%,
+    #8a2be2 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.divine-status {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.wallet-shrine {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 300;
+  padding: 8px 16px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.eat-sanctuary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  color: #ffd700;
+  font-weight: 400;
+  padding: 10px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.1) 100%
+  );
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
   box-shadow: 
-    0 10px 40px rgba(0, 220, 255, 0.6),
-    inset 0 0 30px rgba(0, 240, 255, 0.5);
-  background: rgba(0, 120, 220, 0.8);
+    0 0 20px rgba(255, 215, 0, 0.2),
+    inset 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-.large-quantum-button:active {
-  transform: translateY(-2px) scale(1.02);
+.eat-symbol {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
 }
 
-.quantum-button-glow {
+/* 神圣动作按钮 */
+.divine-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.divine-btn {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(138, 43, 226, 0.1) 50%,
+    rgba(255, 215, 0, 0.1) 100%
+  );
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  color: #ffffff;
+  border-radius: 50px;
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 0 25px rgba(255, 215, 0, 0.2),
+    inset 0 0 15px rgba(255, 255, 255, 0.03);
+  min-width: 250px;
+  justify-content: center;
+  letter-spacing: 0.5px;
+}
+
+.divine-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  border-color: rgba(255, 215, 0, 0.6);
+  box-shadow: 
+    0 10px 40px rgba(255, 215, 0, 0.3),
+    inset 0 0 25px rgba(255, 255, 255, 0.08);
+}
+
+.ascension-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.15) 0%,
+    rgba(138, 43, 226, 0.15) 50%,
+    rgba(255, 215, 0, 0.15) 100%
+  );
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  padding: 18px 50px;
+  font-size: 1.4rem;
+  min-width: 300px;
+}
+
+.btn-symbol {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.btn-divine-glow {
   position: absolute;
   top: -100%;
   left: -100%;
   width: 300%;
   height: 300%;
   background: radial-gradient(
-    ellipse at center,
-    rgba(0, 255, 255, 0.5) 0%,
-    rgba(0, 180, 255, 0.3) 20%,
-    rgba(0, 120, 220, 0.1) 40%,
+    circle,
+    rgba(255, 215, 0, 0.3) 0%,
+    rgba(138, 43, 226, 0.2) 30%,
     transparent 70%
   );
   opacity: 0;
+  transition: opacity 0.4s ease;
   mix-blend-mode: screen;
-  transform: rotate(30deg);
-  z-index: -1;
-  transition: opacity 0.3s ease;
 }
 
-.large-quantum-button:hover .quantum-button-glow {
+.divine-btn:hover .btn-divine-glow {
   opacity: 1;
-  animation: rotate-glow 3s linear infinite;
+  animation: divineGlowRotate 3s linear infinite;
 }
 
-.btn-arrow {
-  font-size: 1.6rem;
-  margin-left: 5px;
-  transition: transform 0.3s ease;
-}
-
-.large-quantum-button:hover .btn-arrow {
-  transform: translateX(5px);
-}
-
-@keyframes rotate-glow {
-  0% { transform: rotate(30deg); }
-  100% { transform: rotate(390deg); }
-}
-
-/* 量子弹窗和通知样式 */
-.quantum-toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: bold;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-
-.quantum-toast.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.quantum-toast.success {
-  background: rgba(0, 180, 120, 0.85);
-  border: 1px solid rgba(0, 220, 150, 0.5);
-  box-shadow: 
-    0 5px 25px rgba(0, 150, 100, 0.4),
-    0 0 15px rgba(0, 220, 150, 0.3);
-  text-shadow: 0 0 10px rgba(0, 255, 150, 0.7);
-}
-
-.quantum-toast.error {
-  background: rgba(200, 50, 50, 0.85);
-  border: 1px solid rgba(255, 100, 100, 0.5);
-  box-shadow: 
-    0 5px 25px rgba(150, 50, 50, 0.4),
-    0 0 15px rgba(255, 100, 100, 0.3);
-  text-shadow: 0 0 10px rgba(255, 150, 150, 0.7);
-}
-
-.quantum-toast.info {
-  background: rgba(50, 120, 200, 0.85);
-  border: 1px solid rgba(100, 180, 255, 0.5);
-  box-shadow: 
-    0 5px 25px rgba(50, 100, 200, 0.4),
-    0 0 15px rgba(100, 180, 255, 0.3);
-  text-shadow: 0 0 10px rgba(150, 200, 255, 0.7);
-}
-
-/* 闪光充能按钮动画 */
-.charging-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.charging-button::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
+/* 神谕智慧卡片 */
+.oracle-wisdom-card {
   background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
+    135deg,
+    rgba(255, 215, 0, 0.08) 0%,
+    rgba(138, 43, 226, 0.08) 50%,
+    rgba(255, 215, 0, 0.08) 100%
   );
-  transform: skewX(-25deg);
-  animation: charging-shine 2s infinite;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
+  backdrop-filter: blur(15px);
+  box-shadow: 
+    0 0 30px rgba(255, 215, 0, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.03);
+  text-align: center;
 }
 
-@keyframes charging-shine {
-  100% {
-    left: 150%;
+.wisdom-header {
+  font-size: 1.3rem;
+  color: #ffd700;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.wisdom-value {
+  font-size: 1.8rem;
+  color: #ffffff;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+}
+
+.wisdom-desc {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.wisdom-note {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* 动画关键帧 */
+@keyframes celestialDrift {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-50px, -50px); }
+}
+
+@keyframes particleFloat {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-200px, -200px); }
+}
+
+@keyframes geometryRotate {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes mistFlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes sanctumPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes ringRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes essencePulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes titleShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes blessingPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes auraFlow {
+  0%, 100% { opacity: 0.4; transform: translateX(-50%) scaleX(1); }
+  50% { opacity: 0.8; transform: translateX(-50%) scaleX(1.2); }
+}
+
+@keyframes borderShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes blessingRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes ritualPulse {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes ritualRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes textPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes divineGlowRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 过渡动画 */
+.divine-reveal-enter-active,
+.divine-reveal-leave-active {
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.divine-reveal-enter-from,
+.divine-reveal-leave-to {
+  opacity: 0;
+  transform: translateY(30px) scale(0.9);
+}
+
+.divine-fade-enter-active,
+.divine-fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.divine-fade-enter-from,
+.divine-fade-leave-to {
+  opacity: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .sacred-text {
+    font-size: 3rem;
+  }
+  
+  .divine-features {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .divine-halo {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .ring-1 {
+    width: 140px;
+    height: 140px;
+    top: 30px;
+    left: 30px;
+  }
+  
+  .ring-2 {
+    width: 170px;
+    height: 170px;
+    top: 15px;
+    left: 15px;
+  }
+  
+  .ring-3 {
+    width: 200px;
+    height: 200px;
+    top: 0;
+    left: 0;
+  }
+  
+  .divine-status {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .sanctuary-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
   }
 }
 </style> 
