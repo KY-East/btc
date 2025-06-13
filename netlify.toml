@@ -7,7 +7,4 @@
   NPM_FLAGS = "--legacy-peer-deps --no-fund"
   NODE_OPTIONS = "--max_old_space_size=4096"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200 
+# 删除重定向规则，允许直接访问静态文件 
